@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "254932787569",
+    "firebase_url": "https://smart-student-tracking-system-default-rtdb.firebaseio.com",
+    "project_id": "smart-student-tracking-system",
+    "storage_bucket": "smart-student-tracking-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254932787569:android:55815de6266d072e6016d0",
+        "android_client_info": {
+          "package_name": "com.example.admin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254932787569-fuuui3o7t7o9p4p2aqmjsf85mds4rfci.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.admin_app",
+            "certificate_hash": "9a9e55517d9504c1bfd3cc99023bb255fa6af431"
+          }
+        },
+        {
+          "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRnG02wXN0A2qP0NZa3yUU0bb3v7ZiEQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254932787569:android:7df89d834ed9290a6016d0",
+        "android_client_info": {
+          "package_name": "com.example.driver_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254932787569-tcrg1k8teo61eoidg1kvkgbvc56h1pv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.driver_app",
+            "certificate_hash": "9a9e55517d9504c1bfd3cc99023bb255fa6af431"
+          }
+        },
+        {
+          "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRnG02wXN0A2qP0NZa3yUU0bb3v7ZiEQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254932787569:android:6782872153da54fa6016d0",
+        "android_client_info": {
+          "package_name": "com.example.user_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254932787569-b1shj9j7dn3j5q3f9id0jjvu5om4nbt4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user_app",
+            "certificate_hash": "9a9e55517d9504c1bfd3cc99023bb255fa6af431"
+          }
+        },
+        {
+          "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRnG02wXN0A2qP0NZa3yUU0bb3v7ZiEQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254932787569-he8dfdgu4n6c7ds8hkpbujh77mh3t7re.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
