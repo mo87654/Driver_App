@@ -8,7 +8,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:254932787569:android:55815de6266d072e6016d0",
+        "mobilesdk_app_id": "1:254932787569:android:b56bb3737c962f266016d0",
         "android_client_info": {
           "package_name": "com.example.admin_app"
         }
@@ -45,7 +45,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:254932787569:android:7df89d834ed9290a6016d0",
+        "mobilesdk_app_id": "1:254932787569:android:6e2a67e10d28eed46016d0",
         "android_client_info": {
           "package_name": "com.example.driver_app"
         }
@@ -82,18 +82,18 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:254932787569:android:6782872153da54fa6016d0",
+        "mobilesdk_app_id": "1:254932787569:android:a1f9daf21bb0b8616016d0",
         "android_client_info": {
           "package_name": "com.example.user_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "254932787569-b1shj9j7dn3j5q3f9id0jjvu5om4nbt4.apps.googleusercontent.com",
+          "client_id": "254932787569-ub5beo9gh3s7ecp2nvnmocfd46n8el14.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.user_app",
-            "certificate_hash": "9a9e55517d9504c1bfd3cc99023bb255fa6af431"
+            "certificate_hash": "8fc7878fd47949edcf1e781d386e1e1143cbd5e5"
           }
         },
         {
