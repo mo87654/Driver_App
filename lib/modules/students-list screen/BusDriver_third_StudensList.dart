@@ -90,7 +90,6 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
                           ],),
                       )
                   ),
-                  //buildStudItem(student[index], index+1),
               itemCount: student.length,
             ),
           )
@@ -99,35 +98,7 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
 
   }
 }
-/*
-Widget buildStudItem(Studmodel student, var num) =>
-    Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: InkWell(
-      onTap: (){
-        Navigator.push(context as BuildContext,
-        MaterialPageRoute(
-            builder: (context)=>BusdriverStudentInfo()
-        )
-        );
-      },
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            child: Text(
-              '$num'
-            ),
-          ),
-          SizedBox(width: 10,),
-          Text(student.name,style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w400
-          ),),
-        ],),
-    )
-);
-*/
+
 
 
 
