@@ -1,11 +1,28 @@
 
 import 'package:flutter/material.dart';
 
+import '../../shared/components/colors.dart';
+
 class BusdriverStudentInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appColor(),
+        title: Text(
+          'Student information'
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back
+          ),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -103,6 +120,7 @@ class BusdriverStudentInfo extends StatelessWidget {
               ],),
           ),
         ],
-      );
+      )
+    );
   }
 }

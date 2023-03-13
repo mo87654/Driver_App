@@ -17,7 +17,7 @@ class PersonalInfo extends StatelessWidget {
         title: Text (
             'Personal Info'
         ),
-        backgroundColor: color(),
+        backgroundColor: appColor(),
       ),
       body: SingleChildScrollView(
         child: Form(

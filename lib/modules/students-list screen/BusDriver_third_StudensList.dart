@@ -1,3 +1,4 @@
+import 'package:driver_app/modules/student-info%20screen/BusDriver_fourth.dart';
 import 'package:flutter/material.dart';
 class Studmodel {
   final String name;
@@ -62,7 +63,34 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
 
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) => buildStudItem(student[index], index+1),
+              itemBuilder: (context, index) =>
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context)=>BusdriverStudentInfo()
+                              )
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              child: Text(
+                                  '${index+1}'
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Text(student[index].name,style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w400
+                            ),),
+                          ],),
+                      )
+                  ),
+                  //buildStudItem(student[index], index+1),
               itemCount: student.length,
             ),
           )
@@ -71,10 +99,18 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
 
   }
 }
-Widget buildStudItem(Studmodel student, var num) => Padding(
+/*
+Widget buildStudItem(Studmodel student, var num) =>
+    Padding(
     padding: const EdgeInsets.all(8.0),
-    child: GestureDetector(
-      onTap: (){ print('kesdf');},
+    child: InkWell(
+      onTap: (){
+        Navigator.push(context as BuildContext,
+        MaterialPageRoute(
+            builder: (context)=>BusdriverStudentInfo()
+        )
+        );
+      },
       child: Row(
         children: [
           CircleAvatar(
@@ -91,6 +127,7 @@ Widget buildStudItem(Studmodel student, var num) => Padding(
         ],),
     )
 );
+*/
 
 
 

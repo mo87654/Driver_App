@@ -14,7 +14,7 @@ class HelpPage extends StatelessWidget {
           },
         ),
         title: Text ('Help!'),
-        backgroundColor: color(),
+        backgroundColor: appColor(),
       ),
       body: SingleChildScrollView(
         child: Form(
