@@ -56,7 +56,7 @@ class _DriverLayoutState extends State<DriverLayout> {
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       appBar: AppBar(
-        backgroundColor: color(),
+        backgroundColor: appColor(),
         leading: leadingicon[3 - currentIndex],
         title: Text(
           title[3 - currentIndex],
@@ -130,7 +130,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 40.0),
-                    child: Switch(onChanged: (bool value) {  }, value: true, activeColor: color(),),
+                    child: Switch(onChanged: (bool value) {  }, value: true, activeColor: appColor(),),
                   ),
                 ],
               ),
@@ -215,7 +215,7 @@ class _DriverLayoutState extends State<DriverLayout> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           currentIndex: currentIndex,
-          backgroundColor: color(),
+          backgroundColor: appColor(),
           type: BottomNavigationBarType.fixed,
           onTap: (index){
             setState(() {

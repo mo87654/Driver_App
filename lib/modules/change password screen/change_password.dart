@@ -27,7 +27,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           },
         ),
         title: Text ('Chang Password'),
-        backgroundColor: color(),
+        backgroundColor: appColor(),
 
 
 
