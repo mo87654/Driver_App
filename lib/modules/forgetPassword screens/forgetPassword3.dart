@@ -155,7 +155,7 @@ bool showpassword2 = true;
                       fontSize: 17,
                     ),
                   ),
-                  color: Color(0xff014EB8),
+                  color: Color(0xff515281),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0), ),
                 ),
