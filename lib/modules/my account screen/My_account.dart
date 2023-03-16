@@ -38,7 +38,8 @@ class _MyAccountState extends State<MyAccount> {
                     Align(
 
                       alignment: AlignmentDirectional.topStart,
-                      child: Container(child: Image.asset('assets/images/background2.jpg'),
+                      child: Container(child: Image.asset('assets/images/background2.jpg',
+                        fit: BoxFit.cover ,),
                         width: double.infinity,
                         height: 200,
                       ),
