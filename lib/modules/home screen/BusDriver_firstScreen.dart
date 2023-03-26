@@ -1,9 +1,31 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class BusDriverHome extends StatelessWidget {
+import '../login screen/login.dart';
+
+class BusDriverHome extends StatefulWidget {
 
   @override
+  State<BusDriverHome> createState() => _BusDriverHomeState();
+}
+
+class _BusDriverHomeState extends State<BusDriverHome> {
+  FirebaseAuth instance = FirebaseAuth.instance;
+  @override
+  void initState() {
+    super.initState();
+    instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      }
+    });
+
+
+  }
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
