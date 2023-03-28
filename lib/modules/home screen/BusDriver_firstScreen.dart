@@ -1,12 +1,8 @@
 
-
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:driver_app/layout/driver_layout.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../students-list screen/BusDriver_third_StudensList.dart';
+import '../login screen/login.dart';
 
 class BusDriverHome extends StatefulWidget {
 
@@ -15,13 +11,22 @@ class BusDriverHome extends StatefulWidget {
 }
 
 class _BusDriverHomeState extends State<BusDriverHome> {
-
+  FirebaseAuth instance = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
     getIDs();
-  }
+    instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      }
+    });
 
+
+  }
   List studentData = [];
   List ids = [];
   List students =[];
@@ -32,13 +37,13 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         .instance
         .collection('Students')
         .get().then((value) {
-          value.docs.forEach((element) {
-            setState(() {
-              ids.add(element.id);
-            });
-          });
-          rand = ids[Random().nextInt(ids.length)];
-          //getData();
+      value.docs.forEach((element) {
+        setState(() {
+          ids.add(element.id);
+        });
+      });
+      rand = ids[Random().nextInt(ids.length)];
+      //getData();
     });
   }
   getData()async{
@@ -48,8 +53,6 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         .doc(rand).get();
     studentData.add(dataRef.data());
   }
-
-  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -73,7 +76,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   style: TextStyle(
                     fontSize: 22,
                   ),
-                ),
+                )
               ],
             ),
             SizedBox(

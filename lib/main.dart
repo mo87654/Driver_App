@@ -1,19 +1,41 @@
-import 'package:driver_app/modules/login%20screen/login.dart';
+
+import 'package:driver_app/layout/driver_layout.dart';
+import 'package:driver_app/modules/home%20screen/BusDriver_firstScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
+import 'modules/login screen/login.dart';
 
-void main()async {
+bool isLogin = false;
+
+void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  // FirebaseApp.initializeApp(/*context=*/ this);
+  // FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+  // firebaseAppCheck.installAppCheckProviderFactory(
+  //     PlayIntegrityAppCheckProviderFactory.getInstance());
+
+  var user = FirebaseAuth.instance.currentUser;
+
+  if(user == null){
+    isLogin = false ;
+  }else{
+    isLogin = true ;
+  }
+
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,13 +45,14 @@ class MyApp extends StatelessWidget {
         minWidth: 480,
         defaultScale: true,
         breakpoints: [
-          ResponsiveBreakpoint.autoScale(480, name: 'SM'),
-          ResponsiveBreakpoint.autoScale(800, name: 'MD'),
-          ResponsiveBreakpoint.autoScale(1000, name: 'LG'),
-          ResponsiveBreakpoint.autoScale(1200, name: 'XL'),
-          ResponsiveBreakpoint.autoScale(2460, name: '2XL'),
+          const ResponsiveBreakpoint.autoScale(480, name: 'SM'),
+          const ResponsiveBreakpoint.autoScale(800, name: 'MD'),
+          const ResponsiveBreakpoint.autoScale(1000, name: 'LG'),
+          const ResponsiveBreakpoint.autoScale(1200, name: 'XL'),
+          const ResponsiveBreakpoint.autoScale(2460, name: '2XL'),
         ],),
-      home: Login(),
+      home: isLogin == false? Login(): DriverLayout(),
+
       debugShowCheckedModeBanner: false,
     );
   }
