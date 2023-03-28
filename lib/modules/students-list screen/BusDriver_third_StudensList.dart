@@ -1,34 +1,27 @@
 import 'package:driver_app/modules/student-info%20screen/BusDriver_fourth.dart';
 import 'package:flutter/material.dart';
-class Studmodel {
-  final String name;
-  Studmodel({
-    required this.name
-  });
-}
 
 class BusdriverStudentList extends StatefulWidget {
-
+  BusdriverStudentList({
+     this.names,
+});
+  List? names;
 
   @override
-  State<BusdriverStudentList> createState() => _BusdriverStudentListState();
+  State<BusdriverStudentList> createState() => _BusdriverStudentListState(names);
 }
 
 class _BusdriverStudentListState extends State<BusdriverStudentList> {
-  List <Studmodel> student =[
-    Studmodel(name: 'Student 1'),
-    Studmodel(name: 'Student 2'),
-    Studmodel(name: 'Student 3'),
-    Studmodel(name: 'Student 4'),
-    Studmodel(name: 'Student 5'),
-    Studmodel(name: 'Student 6'),
-    Studmodel(name: 'Student 7'),
-    Studmodel(name: 'Student 8'),
-    Studmodel(name: 'Student 9'),
-    Studmodel(name: 'Student 10'),
-    Studmodel(name: 'Student 11'),
-    Studmodel(name: 'Student 12'),
-  ];
+  _BusdriverStudentListState(
+    this.names,
+);
+  List? names;
+
+  @override
+  void initState() {
+    super.initState();
+    print(names);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +55,9 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
           ),
 
           Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) =>
+            child: names ==null? Text('hello')
+                :ListView.builder(
+                  itemBuilder: (context, index) =>
                   Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
@@ -83,14 +77,15 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
                               ),
                             ),
                             SizedBox(width: 10,),
-                            Text(student[index].name,style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w400
-                            ),),
+                            Text(names?[index],
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w400
+                              ),),
                           ],),
                       )
                   ),
-              itemCount: student.length,
+              itemCount: names!.length,
             ),
           )
         ],
