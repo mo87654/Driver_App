@@ -6,6 +6,7 @@ import '../modules/change password screen/change_password.dart';
 import '../modules/help screen/help_screen.dart';
 import '../modules/personal info screen/personal_info.dart';
 import '../modules/students-list screen/BusDriver_third_StudensList.dart';
+import '../shared/components/SignoutMessage.dart';
 import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
 
@@ -197,9 +198,10 @@ class _DriverLayoutState extends State<DriverLayout> {
                   ),
                 ),
 
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: () {showDialog(
+                  context: context, builder: (BuildContext context) => SignOutMessage(),
+                );
+                  },
               ),
             ],
           ),
