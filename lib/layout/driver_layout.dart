@@ -11,13 +11,18 @@ import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
 
 class DriverLayout extends StatefulWidget {
-  const DriverLayout({Key? key}) : super(key: key);
+  DriverLayout({this.names});
+  List? names;
 
   @override
-  State<DriverLayout> createState() => _DriverLayoutState();
+  State<DriverLayout> createState() => _DriverLayoutState(names);
 }
 
 class _DriverLayoutState extends State<DriverLayout> {
+  _DriverLayoutState(this.names);
+  List? names;
+
+  //String? name;
   var currentIndex = 3;
   List<Widget> driverScreens =[
     BusDriverHome(),
@@ -38,7 +43,7 @@ class _DriverLayoutState extends State<DriverLayout> {
       Text(' '),
       driverLeading(
           onpressedfun: (){
-            Navigator.pop(context);
+            print(names);
           }
       ),
       driverLeading(
