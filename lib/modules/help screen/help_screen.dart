@@ -1,6 +1,6 @@
 
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
-import '../../../shared/component/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -19,7 +19,7 @@ class HelpPage extends StatelessWidget {
           },
         ),
         title: Text ('Help!'),
-        backgroundColor: color(),
+        backgroundColor: appColor(),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -161,7 +161,5 @@ class HelpPage extends StatelessWidget {
 
     );
   }
-
-  color() {}
 }
 
