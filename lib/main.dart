@@ -1,8 +1,6 @@
 
 import 'package:driver_app/layout/driver_layout.dart';
-import 'package:driver_app/modules/home%20screen/BusDriver_firstScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
@@ -12,14 +10,9 @@ import 'modules/login screen/login.dart';
 bool isLogin = false;
 
 void main() async{
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // FirebaseApp.initializeApp(/*context=*/ this);
-  // FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-  // firebaseAppCheck.installAppCheckProviderFactory(
-  //     PlayIntegrityAppCheckProviderFactory.getInstance());
 
   var user = FirebaseAuth.instance.currentUser;
 

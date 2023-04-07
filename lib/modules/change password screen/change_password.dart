@@ -1,9 +1,8 @@
-//import 'package:admin_app/modules/login%20screen/login.dart';
-import 'package:driver_app/modules/login%20screen/login.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:user_app/modules/login%20screen/login.dart';
-//import '../../shared/component/colors.dart';
+import '../../shared/components/colors.dart';
+import '../my account screen/My_account.dart';
 
 
 
@@ -21,6 +20,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   void dispose() {
+    currentPasswordController.dispose();
     newPasswordController.dispose();
     confirmNewPasswordController.dispose();
     super.dispose();
@@ -30,28 +30,38 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool showpassword2 = true;
   bool showpassword3 = true;
 
-  String errorMessage = "";
-
+  TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmNewPasswordController = TextEditingController();
 
-  final currentUser = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;
 
   ChangePassword123()async{
     try{
-      await currentUser!.updatePassword(newPasswordController.text.trim());
-      FirebaseAuth.instance.signOut();
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => Login(),), (route) => false);
+      final user = FirebaseAuth.instance.currentUser;
+      final email = user!.email;
 
 
-      //ScaffoldMessenger.of(context).showSnackBar(
-      //SnackBar(content: Text("password changed successfully please login again")),);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email.toString(),
+        password: currentPasswordController.text,
+      );
+      await user.updatePassword(newPasswordController.text.trim());
+
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyAccount(),));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(backgroundColor: Colors.black38,
+            padding: EdgeInsets.symmetric(vertical: 18),
+            content: Text("  your password has been changed successfully ",style: TextStyle(fontSize: 20),)),);
 
 
     }on FirebaseAuthException catch(e){
       setState(() {
-        errorMessage = e.message!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(backgroundColor: Colors.black38,
+              padding: EdgeInsets.symmetric(vertical: 18),
+              content: Text(e.message ??"",style: TextStyle(fontSize: 15),)),);
       });
 
 
@@ -70,7 +80,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           },
         ),
         title: Text ('Change Password'),
-        backgroundColor: app_color(),
+        backgroundColor: appColor(),
 
 
 
@@ -84,52 +94,56 @@ class _ChangePasswordState extends State<ChangePassword> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 40.0),
-              // Padding(
-              //   padding: const EdgeInsetsDirectional.only(
-              //       start: 20,
-              //       end: 20
-              //   ),
-              //   child: TextFormField(
-              //     style: TextStyle(
-              //       fontSize: 20,
-              //     ),
-              //     decoration: InputDecoration(
-              //       floatingLabelStyle: TextStyle(
-              //         fontSize: 18,
-              //       ),
-              //       border: OutlineInputBorder(),
-              //       labelText:'Current Password',
-              //         suffixIcon: IconButton(
-              //             onPressed: (){
-              //               setState(() {
-              //                 showpassword1 = !showpassword1;
-              //               });
-              //             },
-              //             icon: showpassword1? Icon(
-              //                 Icons.visibility
-              //             ) :
-              //             Icon(
-              //               Icons.visibility_off,
-              //               color: Colors.grey,
-              //             )
-              //         )
-              //     ),
-              //     keyboardType: TextInputType.visiblePassword,
-              //     textAlignVertical: TextAlignVertical.top,
-              //     textInputAction: TextInputAction.next,
-              //     obscureText: showpassword1,
-              //
-              //     validator: (value)
-              //     {
-              //       if (value!.isEmpty){
-              //         return 'Password required';
-              //       }
-              //       return null;
-              //     },
-              //
-              //   ),
-              // ),
-              // SizedBox(height: 20.0),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(
+                    start: 20,
+                    end: 20
+                ),
+                child: TextFormField(
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(
+                      floatingLabelStyle: TextStyle(
+                        fontSize: 18,
+                      ),
+                      border: OutlineInputBorder(),
+                      labelText:'Current Password',
+                      suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              showpassword1 = !showpassword1;
+                            });
+                          },
+                          icon: showpassword1? Icon(
+                              Icons.visibility
+                          ) :
+                          Icon(
+                            Icons.visibility_off,
+                            color: Colors.grey,
+                          )
+                      )
+                  ),
+                  keyboardType: TextInputType.visiblePassword,
+                  textAlignVertical: TextAlignVertical.top,
+                  textInputAction: TextInputAction.next,
+                  controller: currentPasswordController,
+                  obscureText: showpassword1,
+
+                  validator: (value)
+                  {
+                    if (value!.isEmpty){
+                      return 'Password required';
+                    }else if (value.length < 6 ){
+                      return "password should be at least 6 characters";
+
+                    }
+                    return null;
+                  },
+
+                ),
+              ),
+              SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsetsDirectional.only(
                     start: 20,
@@ -169,6 +183,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                   {
                     if (value!.isEmpty){
                       return 'New password required';
+                    }else if (value.length < 6 ){
+                      return "password should be at least 6 characters";
+
                     }
                     return null;
                   },
@@ -218,6 +235,9 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                     } else if (value != newPasswordController.text) {
                       return 'Passwords do not match';
+                    }else if (value.length < 6 ){
+                      return "password should be at least 6 characters";
+
                     }
                     return null;
                   },
@@ -235,12 +255,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   onPressed: ()async{
                     if (formkey.currentState!.validate()) {
                       ChangePassword123();
-
                     }
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("password changed successfully please login again")),);
-
                   },
                   child:Text(
                     'Save',
@@ -249,6 +264,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       fontSize: 17,
 
                     ),
+
                   ),
                   color: Color(0xff014EB8),
                   shape:RoundedRectangleBorder (
@@ -294,7 +310,4 @@ class _ChangePasswordState extends State<ChangePassword> {
       ),
     );
   }
-
-  app_color() {}
 }
-
