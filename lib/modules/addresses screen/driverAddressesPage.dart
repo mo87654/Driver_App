@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/components/components.dart';
+import '../../shared/components/local db methods.dart';
 
 class DriverAddresses extends StatefulWidget {
   @override
@@ -10,8 +14,10 @@ class _DriverAddressesState extends State<DriverAddresses> {
   @override
   void initState() {
     super.initState();
+    // getAddresses();
   }
-  static int _len = 10;
+
+  static int _len = addresses.length;
   List<bool> isChecked = List.generate(_len, (index) => false);
   String _getTitle() =>
       "Checkbox Demo : Checked = ${isChecked.where((check) => check == true).length}, Unchecked = ${isChecked.where((check) => check == false).length}";
@@ -33,7 +39,7 @@ class _DriverAddressesState extends State<DriverAddresses> {
                   width: 10,
                 ),
                 Text(
-                  '22',
+                  '${names.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -44,7 +50,8 @@ class _DriverAddressesState extends State<DriverAddresses> {
               height: 20,
             ),
             Expanded(
-              child: ListView.separated(
+              child:_len==0?Center(child: CircularProgressIndicator()):
+              ListView.separated(
                   itemBuilder: (context, index){
                     return Container(
                       padding: EdgeInsets.all(10),
@@ -59,7 +66,7 @@ class _DriverAddressesState extends State<DriverAddresses> {
                         children: [
                           Expanded(
                             child: Text(
-                              'address ##################################',
+                              addresses[index],
                               style: TextStyle(
                                 fontSize: 24,
                               ),
@@ -88,7 +95,7 @@ class _DriverAddressesState extends State<DriverAddresses> {
                       height: 20,
                     );
                   },
-                  itemCount: _len,
+                  itemCount: addresses.length,
               ),
             )
 
@@ -98,5 +105,20 @@ class _DriverAddressesState extends State<DriverAddresses> {
       );
 
   }
+
+ /* void getAddresses () async {
+    await FirebaseFirestore.
+    instance.
+    collection('Students').
+    get().then((value){
+      value.docs.forEach((element) {
+        setState(() {
+          addresses.add(element.data()['address']);
+        });
+      });
+    }).catchError((error){
+      print(error);
+    });
+  }*/
 
 }

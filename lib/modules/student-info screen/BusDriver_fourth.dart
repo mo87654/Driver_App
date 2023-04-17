@@ -2,9 +2,22 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/components/colors.dart';
+import '../../shared/components/local db methods.dart';
 
-class BusdriverStudentInfo extends StatelessWidget {
+class BusdriverStudentInfo extends StatefulWidget {
 
+  BusdriverStudentInfo({
+   required this.index,
+  });
+int index;
+
+  @override
+  State<BusdriverStudentInfo> createState() => _BusdriverStudentInfoState(index);
+}
+
+class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
+  _BusdriverStudentInfoState(this.index);
+  int index;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +51,7 @@ class BusdriverStudentInfo extends StatelessWidget {
                   width: 10,
                 ),
                 Text(
-                  '22',
+                  '${names.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -59,13 +72,14 @@ class BusdriverStudentInfo extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Student",style: TextStyle(
+                    Text(names[index]['name'],
+                      style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w400
                     ),),
                     SizedBox(height: 8,),
                     Text(
-                      "Grade",
+                      names[index]['grad'],
                       style: TextStyle(
                           color: Colors.grey,
                         fontSize: 17,
@@ -84,7 +98,9 @@ class BusdriverStudentInfo extends StatelessWidget {
           SizedBox(height: 50,),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Parent's email :",style: TextStyle(
+            child: Text(
+              "Parent's email :",
+              style: TextStyle(
               fontSize: 27,
               fontWeight: FontWeight.w400,
 
@@ -96,7 +112,9 @@ class BusdriverStudentInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-              Text("356788@####.com",style: TextStyle(
+              Text(
+                  names[index]['email'],
+                  style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w400,))
             ],),
@@ -114,7 +132,9 @@ class BusdriverStudentInfo extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(100, 20, 0, 0),
             child: Column(
               children: [
-                Text("012445566777",style: TextStyle(
+                Text(
+                    names[index]['phone'],
+                    style: TextStyle(
                   fontSize: 27,
                   fontWeight: FontWeight.w400,))
               ],),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../modules/addresses screen/driverAddressesPage.dart';
 import '../modules/home screen/BusDriver_firstScreen.dart';
@@ -9,20 +11,24 @@ import '../modules/students-list screen/BusDriver_third_StudensList.dart';
 import '../shared/components/SignoutMessage.dart';
 import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
+import '../shared/components/local db methods.dart';
 
 class DriverLayout extends StatefulWidget {
-  DriverLayout({this.names});
-  List? names;
 
   @override
-  State<DriverLayout> createState() => _DriverLayoutState(names);
+  State<DriverLayout> createState() => _DriverLayoutState();
 }
 
 class _DriverLayoutState extends State<DriverLayout> {
-  _DriverLayoutState(this.names);
-  List? names;
 
-  //String? name;
+  @override
+  void initState(){
+    super.initState();
+    createDB();
+    getbusID().then((value) {
+      getAddresses();
+    });
+  }
   var currentIndex = 3;
   List<Widget> driverScreens =[
     BusDriverHome(),
@@ -43,7 +49,6 @@ class _DriverLayoutState extends State<DriverLayout> {
       Text(' '),
       driverLeading(
           onpressedfun: (){
-            print(names);
           }
       ),
       driverLeading(
@@ -270,5 +275,36 @@ class _DriverLayoutState extends State<DriverLayout> {
           ]
       ),
     );
+  }
+
+  Future getbusID() async {
+    var user = FirebaseAuth.
+    instance.currentUser;
+    await FirebaseFirestore.
+    instance.
+    collection('Drivers').
+    doc(user?.uid).
+    get().then((value){
+      busid = value.data()!['Bus id'];
+      //getAddresses();
+    }).catchError((Error){
+      print(Error);
+    });
+  }
+  void getAddresses () async {
+    addresses.clear();
+    await FirebaseFirestore.
+    instance.
+    collection('Students').
+    where('Bus id',isEqualTo: busid).
+    get().then((value){
+      value.docs.forEach((element) {
+        setState(() {
+          addresses.add(element.data()['address']);
+        });
+      });
+    }).catchError((error){
+      print(error);
+    });
   }
 }

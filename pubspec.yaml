@@ -43,6 +43,7 @@ dependencies:
   country_picker: ^2.0.20
   responsive_framework: ^0.2.0
   provider:
+  sqflite:
 
 dev_dependencies:
   flutter_test:

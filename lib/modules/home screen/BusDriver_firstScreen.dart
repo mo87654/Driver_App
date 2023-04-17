@@ -1,11 +1,9 @@
 
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../../layout/driver_layout.dart';
+import '../../shared/components/local db methods.dart';
 import '../login screen/login.dart';
 
 class BusDriverHome extends StatefulWidget {
@@ -33,7 +31,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
   }
   List studentData = [];
   List ids = [];
-  List students =[];
+  //List students =[];
   var rand ;
   getIDs()async{
     ids.clear();
@@ -46,11 +44,13 @@ class _BusDriverHomeState extends State<BusDriverHome> {
           ids.add(element.id);
         });
       });
-      rand = ids[Random().nextInt(ids.length)];
+
       //getData();
     });
   }
   getData()async{
+    rand = null;
+    rand = ids[Random().nextInt(ids.length)];
     var dataRef = await FirebaseFirestore
         .instance
         .collection('Students')
@@ -76,7 +76,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   width: 10,
                 ),
                 Text(
-                  '22',
+                  '${names.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -177,10 +177,14 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                                           children: [
                                             MaterialButton(
                                               onPressed:(){
-                                                students.add(studentData[0]['name']);
-                                                DriverLayout(names: students,);
-                                                Navigator.pop(context);
-                                                print(students);
+                                                insertdatabase(
+                                                    name: studentData[0]['name'],
+                                                    email: studentData[0]['email'],
+                                                    phone: studentData[0]['tele-num'],
+                                                    grad: studentData[0]['grad']
+                                                );
+                                                setState(() {});
+                                                  Navigator.pop(context);
                                               },
                                               child: Text(
                                                 'APPROVE',
