@@ -44,6 +44,7 @@ dependencies:
   responsive_framework: ^0.2.0
   provider:
   sqflite:
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
