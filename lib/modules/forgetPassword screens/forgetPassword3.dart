@@ -12,9 +12,13 @@ class ForgetPassword3 extends StatefulWidget {
   // final String verificationId;
   // final String phoneNumber;
   // final String smsCode;
+
+
   @override
   State<ForgetPassword3> createState() => _ForgetPassword3State();
 }
+
+
 class _ForgetPassword3State extends State<ForgetPassword3> {
   var formkey = GlobalKey<FormState>();
   bool showpassword1 = true;
@@ -25,6 +29,8 @@ class _ForgetPassword3State extends State<ForgetPassword3> {
   bool isLoading = false;
 
   User? user = FirebaseAuth.instance.currentUser;
+
+
   // Future changePassword() async {
   //    try{
   //      FirebaseAuth auth = FirebaseAuth.instance;
@@ -76,6 +82,9 @@ class _ForgetPassword3State extends State<ForgetPassword3> {
       return(e.toString());
     }
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -298,7 +307,7 @@ class _ForgetPassword3State extends State<ForgetPassword3> {
                       fontSize: 17,
                     ),
                   ),
-                  color: Color(0xff515281),
+                  color: Color(0xff014EB8),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0),),
                 ),
