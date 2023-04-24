@@ -5,19 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'forgetpassword2.dart';
-
-
 class ForgetPassword1 extends StatefulWidget {
   @override
   State<ForgetPassword1> createState() => _ForgetPassword1State();
 }
-
 class _ForgetPassword1State extends State<ForgetPassword1> {
   var formkey = GlobalKey<FormState>();
   bool isLoading = false;
 
   String verificationFailedMessage ="";
-
   TextEditingController phoneNumController = TextEditingController();
 
   Country selectedCountry = Country(
@@ -181,9 +177,7 @@ class _ForgetPassword1State extends State<ForgetPassword1> {
               const SizedBox(
                 height: 60.0,
               ),
-
               Text(verificationFailedMessage)
-
             ],
           ),
         ),

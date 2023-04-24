@@ -87,18 +87,13 @@ class ForgetPassword4 extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 17,
-
                         ),
-
                       ),
                       color: Color(0xff014EB8),
                       shape:RoundedRectangleBorder (
                         borderRadius: BorderRadius.circular (10.0), ),
-
-
                     ),
                   )
-
                 ],
               ),
             ),

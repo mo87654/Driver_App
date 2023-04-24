@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../../../shared/components/colors.dart';
 
 class PersonalInfo extends StatelessWidget {
   var formkey = GlobalKey<FormState>();
-
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar:AppBar(
         leading:  IconButton(icon:  Icon(Icons.arrow_back),
           onPressed: () {
@@ -128,19 +125,13 @@ class PersonalInfo extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,
-
                     ),
-
                   ),
                   color: Color(0xff818181),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0), ),
-
-
                 ),
               ),
-
-
             ],
           ),
         ),

@@ -11,15 +11,11 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
-
-
 class _LoginState extends State<Login> {
   var formkey = GlobalKey<FormState>();
 
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
-
-
   bool showpassword = true;
   bool isLoading = false;
   final emailRegex = RegExp(r'^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$');
@@ -34,15 +30,11 @@ class _LoginState extends State<Login> {
             .signInWithEmailAndPassword(
           email: emailcontroller.text,
           password: passwordcontroller.text,);
-
-
         setState(() {
           isLoading = true;
         });
 
         return userCredential;
-
-
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-email') {
           print("not valid email");
@@ -64,11 +56,7 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.symmetric(vertical: 18),
                   content: Text(e.message ??"",style: TextStyle(fontSize: 15),)),);
           });
-
-
         }
-
-
       }catch (e) {
         setState(() {
           isLoading = false;
@@ -77,13 +65,9 @@ class _LoginState extends State<Login> {
                 padding: EdgeInsets.symmetric(vertical: 18),
                 content: Text(e.toString(),style: TextStyle(fontSize: 15),)),);
         });
-
       }
-
     } else{return null;}
   }
-
-
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: Scaffold(

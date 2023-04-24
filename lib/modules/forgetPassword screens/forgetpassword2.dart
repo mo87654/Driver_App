@@ -192,9 +192,6 @@ class _ForgetPassword2State extends State<ForgetPassword2> {
                               ForgetPassword3(),));
                     }
                   }
-
-
-
                 },
                 color: const Color(0xff014EB8),
                 shape:RoundedRectangleBorder (
@@ -210,13 +207,7 @@ class _ForgetPassword2State extends State<ForgetPassword2> {
                     fontSize: 17,
                   ),
                 ),
-
-
-
-
               ),
-
-
             ),
             Text(verificationFailedMessage)
           ],
