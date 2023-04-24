@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -14,6 +16,17 @@ class _MyAccountState extends State<MyAccount> {
   bool status = false;
   PickedFile? _imageFile;
   String? image64;
+
+  final user =  FirebaseAuth.instance.currentUser!;
+
+
+  Future<Object> getuserinfo() async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('Drivers');
+    final String uid = user.uid;
+    final result = await  users.doc(uid).get();
+    return result.data()??['name'];
+
+  }
 
   final ImagePicker picker = ImagePicker();
   Color purple = const Color.fromRGBO(38, 107, 128, 0.9490196078431372);
@@ -89,42 +102,48 @@ class _MyAccountState extends State<MyAccount> {
             child: Column(
 
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:const [
+                children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 25.0),
-                    child: Text('User name',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: FutureBuilder(
+                      future: getuserinfo(),
+                      builder: (_ , AsyncSnapshot snapshot){
 
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Center( child: CircularProgressIndicator());
+                        }
+                        return Text(snapshot.data['name'].toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
-                    child: Text('Student Name',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: FutureBuilder(
+                      future: getuserinfo(),
+                      builder: (_ , AsyncSnapshot snapshot){
 
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Center( child: CircularProgressIndicator());
+                        }
+                        return Text(snapshot.data['email'].toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
 
-                      ),
+                          ),
+                        );
+
+                      },
 
                     ),
+
                   ),
-
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
-                    child: Text('Email Address',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-
-
-                    ),
-                  )
 
                 ]
 
