@@ -46,6 +46,16 @@ class _DriverLayoutState extends State<DriverLayout> {
     'My account'
   ];
 
+  final user =  FirebaseAuth.instance.currentUser!;
+
+
+  Future<Object> getuserinfo() async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('Drivers');
+    final String uid = user.uid;
+    final result = await  users.doc(uid).get();
+    return result.data()??['name'];
+
+  }
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -88,19 +98,38 @@ class _DriverLayoutState extends State<DriverLayout> {
           child: Column(
             children: [
               ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('User name ',
-                  style: TextStyle(
-                      fontSize: 17
-                  ),
+                leading:  const Icon(Icons.person),
+             title: FutureBuilder(
+            future: getuserinfo(),
+            builder: (_ , AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Text(snapshot.data['name'].toString(),
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+
                 ),
-                subtitle: const Text('E-mail address',
-                  style: TextStyle(
-                      fontSize: 17
-                  ),
-                ),
+              );
+
+            },
+          ),
+
+          subtitle: FutureBuilder(
+            future: getuserinfo(),
+            builder: (_ , AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Text(snapshot.data['email'].toString(),
+
+              );
+
+            },
+          ),
                 onTap: () {
-                  Navigator.pop(context);
+
                 },
               ),
               const Padding(
