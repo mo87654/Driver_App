@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../shared/components/components.dart';
 import '../../shared/components/local db methods.dart';
 import '../login screen/login.dart';
 
@@ -38,6 +39,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
     await FirebaseFirestore
         .instance
         .collection('Students')
+        .where('Bus id',isEqualTo: busid)
         .get().then((value) {
       value.docs.forEach((element) {
         setState(() {
@@ -76,7 +78,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   width: 10,
                 ),
                 Text(
-                  '${names.length}',
+                  '${studentsData.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -181,7 +183,8 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                                                     name: studentData[0]['name'],
                                                     email: studentData[0]['email'],
                                                     phone: studentData[0]['tele-num'],
-                                                    grad: studentData[0]['grad']
+                                                    grad: studentData[0]['grad'],
+                                                    mac: studentData[0]['MAC-address'],
                                                 );
                                                 setState(() {});
                                                   Navigator.pop(context);

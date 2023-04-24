@@ -51,7 +51,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
                   width: 10,
                 ),
                 Text(
-                  '${names.length}',
+                  '${studentsData.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -72,14 +72,14 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(names[index]['name'],
+                    Text(studentsData[index]['name'],
                       style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w400
                     ),),
                     SizedBox(height: 8,),
                     Text(
-                      names[index]['grad'],
+                      studentsData[index]['grad'],
                       style: TextStyle(
                           color: Colors.grey,
                         fontSize: 17,
@@ -113,7 +113,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
               Text(
-                  names[index]['email'],
+                  studentsData[index]['email'],
                   style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w400,))
@@ -133,7 +133,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
             child: Column(
               children: [
                 Text(
-                    names[index]['phone'],
+                    studentsData[index]['phone'],
                     style: TextStyle(
                   fontSize: 27,
                   fontWeight: FontWeight.w400,))
