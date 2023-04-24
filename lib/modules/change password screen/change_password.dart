@@ -266,11 +266,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
 
                   ),
-                  color: Color(0xff515281),
+                  color: Color(0xff014EB8),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0), ),
-
-
                 ),
               ),
               SizedBox(
