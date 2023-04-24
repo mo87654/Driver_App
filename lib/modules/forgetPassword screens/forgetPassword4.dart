@@ -20,89 +20,92 @@ class ForgetPassword4 extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          Container(
-            color: Colors.black.withOpacity(.7),
-          ),
-          Center(
-            child: Container(
-              width: width * .85,
-              height: height * .66,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25)
-              ),
-              //clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Column(
+         Container(
+           color: Colors.black.withOpacity(.7),
+         ),
+         Center(
+           child: Container(
+             width: width * .85,
+             height: height * .66,
+             decoration: BoxDecoration(
+                 color: Colors.white,
+                 borderRadius: BorderRadius.circular(25)
+             ),
+             //clipBehavior: Clip.antiAliasWithSaveLayer,
+             child: Column(
 
-                children: [
-                  SizedBox(
-                    height: width * .85 * .21,
-                  ),
-                  Icon(
-                    Icons.check_circle_rounded,
-                    size: 70,
-                    color: Color(0xff014EB8),
-                  ),
-                  SizedBox(
-                    height: height * .85 * .1,
-                  ),
-                  Text(
-                    'Password has been changed successfully',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    'You have just reset your password ,click on the button below to log in',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                    ),
-                    textAlign: TextAlign.center,
+               children: [
+                 SizedBox(
+                   height: width * .85 * .21,
+                 ),
+                 Icon(
+                   Icons.check_circle_rounded,
+                   size: 70,
+                   color: Color(0xff014EB8),
+                 ),
+                 SizedBox(
+                   height: height * .85 * .1,
+                 ),
+                 Text(
+                   'Password has been changed successfully',
+                   style: TextStyle(
+                     fontSize: 20,
+                     fontWeight: FontWeight.bold,
+                   ),
+                   textAlign: TextAlign.center,
+                 ),
+                 SizedBox(
+                   height: 15,
+                 ),
+                 Text(
+                   'You have just reset your password ,click on the button below to log in',
+                   style: TextStyle(
+                     fontSize: 15,
+                     color: Colors.grey,
+                   ),
+                   textAlign: TextAlign.center,
 
-                  ),
-                  SizedBox(
-                    height: height * .85 * .13,
-                  ),
-                  Container(
-                    height: 45,
-                    width: double.infinity,
-                    padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                    /*decoration: BoxDecoration(
+                 ),
+                 SizedBox(
+                   height: height * .85 * .13,
+                 ),
+                 Container(
+                   height: 45,
+                   width: double.infinity,
+                   padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
+                   /*decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(44),
               ),
               clipBehavior: Clip.antiAliasWithSaveLayer,*/
-                    child: MaterialButton(
-                      onPressed: (){
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => Login(),), (route) => false);
-                      },
-                      child:Text(
-                        'Log in',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
+                   child: MaterialButton(
+                     onPressed: (){
+                       Navigator.push(context,
+                           MaterialPageRoute(
+                               builder: (context)=>Login()
+                           )
+                       );
+                     },
+                     child:Text(
+                       'Log in',
+                       style: TextStyle(
+                         color: Colors.white,
+                         fontSize: 17,
 
-                        ),
+                       ),
 
-                      ),
-                      color: Color(0xff014EB8),
-                      shape:RoundedRectangleBorder (
-                        borderRadius: BorderRadius.circular (10.0), ),
+                     ),
+                     color: Color(0xff014EB8),
+                     shape:RoundedRectangleBorder (
+                       borderRadius: BorderRadius.circular (10.0), ),
 
 
-                    ),
-                  )
+                   ),
+                 )
 
-                ],
-              ),
+               ],
+             ),
             ),
-          )
+         )
         ],
       ),
     );
