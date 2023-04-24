@@ -1,13 +1,8 @@
 import 'package:driver_app/modules/student-info%20screen/BusDriver_fourth.dart';
 import 'package:flutter/material.dart';
-class Studmodel {
-  final String name;
-  Studmodel({
-    required this.name
-  });
-}
-
+import '../../shared/components/local db methods.dart';
 class BusdriverStudentList extends StatefulWidget {
+  const BusdriverStudentList({super.key});
 
 
   @override
@@ -15,20 +10,11 @@ class BusdriverStudentList extends StatefulWidget {
 }
 
 class _BusdriverStudentListState extends State<BusdriverStudentList> {
-  List <Studmodel> student =[
-    Studmodel(name: 'Student 1'),
-    Studmodel(name: 'Student 2'),
-    Studmodel(name: 'Student 3'),
-    Studmodel(name: 'Student 4'),
-    Studmodel(name: 'Student 5'),
-    Studmodel(name: 'Student 6'),
-    Studmodel(name: 'Student 7'),
-    Studmodel(name: 'Student 8'),
-    Studmodel(name: 'Student 9'),
-    Studmodel(name: 'Student 10'),
-    Studmodel(name: 'Student 11'),
-    Studmodel(name: 'Student 12'),
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +31,44 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
                 SizedBox(
                   width: 10,
                 ),
-                Text(
-                  '22',
-                  style: TextStyle(
-                    fontSize: 22,
+                Expanded(
+                  child: Text(
+                    '${studentsData.length}',
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
                   ),
+                ),
+                MaterialButton(
+                  color: studentsData.isEmpty? Colors.grey: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),),
+                    child: Row(
+                  children: [
+                    Icon(
+                      Icons.delete_forever,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'Delete List',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+                    onPressed: (){
+                    deletedatabase().then((value){
+                      setState(() {
+
+                      });
+                    });
+                    }
                 )
               ],
             ),
@@ -62,15 +81,16 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
           ),
 
           Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) =>
+            child: studentsData ==null? const Text('hello')
+                :ListView.builder(
+                  itemBuilder: (context, index) =>
                   Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
                         onTap: (){
                           Navigator.push(context,
                               MaterialPageRoute(
-                                  builder: (context)=>BusdriverStudentInfo()
+                                  builder: (context)=>BusdriverStudentInfo(index: index,)
                               )
                           );
                         },
@@ -82,21 +102,23 @@ class _BusdriverStudentListState extends State<BusdriverStudentList> {
                                   '${index+1}'
                               ),
                             ),
-                            SizedBox(width: 10,),
-                            Text(student[index].name,style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w400
-                            ),),
+                            const SizedBox(width: 10,),
+                            Text(studentsData[index]['name'],
+                              style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w400
+                              ),),
                           ],),
                       )
                   ),
-              itemCount: student.length,
+              itemCount: studentsData.length,
             ),
           )
         ],
       );
 
   }
+
 }
 
 

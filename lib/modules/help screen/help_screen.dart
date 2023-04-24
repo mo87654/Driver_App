@@ -1,8 +1,13 @@
+
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
-import '../../../shared/components/colors.dart';
-import '../my account screen/My_account.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 class HelpPage extends StatelessWidget {
   var formkey = GlobalKey<FormState>();
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerProblem = TextEditingController();
   Widget build(BuildContext context) {
     return Scaffold(
 
@@ -10,7 +15,7 @@ class HelpPage extends StatelessWidget {
       appBar:AppBar(
         leading:  IconButton(icon:  Icon(Icons.arrow_back),
           onPressed: () {
-          Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
         title: Text ('Help!'),
@@ -26,6 +31,7 @@ class HelpPage extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 //width: 300.0,
                 child: TextFormField(
+                  controller: _controllerEmail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value)
                   {
@@ -58,6 +64,7 @@ class HelpPage extends StatelessWidget {
                 height: 300,
 
                 child: TextFormField(
+                  controller: _controllerProblem,
                   maxLines: 7,
                   validator: (value)
                   {
@@ -86,11 +93,21 @@ class HelpPage extends StatelessWidget {
                 padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
                 child: MaterialButton(
                   onPressed: (){
+                    Map<String,String> dataToSave={
+                      'Email':_controllerEmail.text ,
+                      'ProblemDescription' :_controllerProblem.text
+
+                    };
+
+                    FirebaseFirestore.instance.collection('problems').add(dataToSave);
+                    //FirebaseAuth.instance.confirmPasswordReset(code: code, newPassword: newPassword)u;
+
                     if (formkey.currentState!.validate())
                     {
 
                     }
                   },
+
                   child:Text(
                     'Save',
                     style: TextStyle(
@@ -106,6 +123,7 @@ class HelpPage extends StatelessWidget {
 
 
                 ),
+
               ),
               SizedBox(
                 height: 25,
@@ -137,7 +155,9 @@ class HelpPage extends StatelessWidget {
             ],
           ),
         ),
+
       ),
+
 
     );
   }

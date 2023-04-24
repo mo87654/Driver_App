@@ -1,5 +1,6 @@
 import 'package:driver_app/layout/driver_layout.dart';
 import 'package:flutter/material.dart';
+
 import '../forgetPassword screens/forgetPassword1.dart';
 
 class Login extends StatefulWidget {
@@ -164,9 +165,8 @@ class _LoginState extends State<Login> {
 
                     ),
 
-
                   ),
-                  color: Color(0xff3c64b2),
+                  color: Color(0xff014EB8),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0), ),
 
