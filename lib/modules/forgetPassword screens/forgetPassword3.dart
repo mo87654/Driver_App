@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
-import 'forgetPassword4.dart';
+import '../New_forgetPasswordScreen/Gmail-Message.dart';
 
 
 class ForgetPassword3 extends StatefulWidget {
@@ -292,7 +292,7 @@ class _ForgetPassword3State extends State<ForgetPassword3> {
                       if (auth != null) {
                         print("changed");
                         Navigator.push(context, MaterialPageRoute(builder: (
-                            context) => ForgetPassword4(),));
+                            context) => gmailMessage(),));
                       }
                     }
                   },
