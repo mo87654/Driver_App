@@ -226,7 +226,13 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                         );
                       }
                   );
-                })
+                }),
+            IconButton(onPressed: ()async{
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login(),), (route) => false);
+
+            },
+                icon: Icon(Icons.logout))
           ],),
       ),
     );
