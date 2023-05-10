@@ -1,8 +1,19 @@
+import 'package:driver_app/modules/login%20screen/login.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../login screen/login.dart';
+import '../../shared/components/buttons.dart';
 
-class ForgetPassword4 extends StatelessWidget {
+class gmailMessage extends StatelessWidget {
+  launchGmail() async {
+    const url = 'googlegmail:///co?to=&subject=&body=';
+    const fallbackUrl = "https://mail.google.com/";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else{
+      await launch(fallbackUrl);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +47,8 @@ class ForgetPassword4 extends StatelessWidget {
 
                 children: [
                   SizedBox(
-                    height: width * .85 * .21,
-                  ),
-                  Icon(
+                    height: width * .85 * .21,),
+                   Icon(
                     Icons.check_circle_rounded,
                     size: 70,
                     color: Color(0xff014EB8),
@@ -47,7 +57,7 @@ class ForgetPassword4 extends StatelessWidget {
                     height: height * .85 * .1,
                   ),
                   Text(
-                    'Password has been changed successfully',
+                    'We have sent you a message to reset your password.',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -58,7 +68,7 @@ class ForgetPassword4 extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'You have just reset your password ,click on the button below to log in',
+                    'please check your gmail',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey,
@@ -69,31 +79,54 @@ class ForgetPassword4 extends StatelessWidget {
                   SizedBox(
                     height: height * .85 * .13,
                   ),
+                  // appButton(
+                  //
+                  //   buttonColor:  Color(0xff818181),
+                  //   text: 'go to Gmail',
+                  //
+                  //   function: (){
+                  //     Navigator.pop(context);
+                  //   },
+                  //
+                  // ),
                   Container(
                     height: 45,
                     width: double.infinity,
                     padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                    /*decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(44),
-              ),
-              clipBehavior: Clip.antiAliasWithSaveLayer,*/
+
                     child: MaterialButton(
                       onPressed: (){
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => Login(),), (route) => false);
+                        launchGmail();
                       },
-                      child:Text(
-                        'Log in',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                        ),
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'go to Gmail',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                            ),
+                          ),
+                          SizedBox(width: 10,),
+                          Icon(Icons.mail,color: Colors.orange,)
+                        ],
                       ),
                       color: Color(0xff014EB8),
                       shape:RoundedRectangleBorder (
                         borderRadius: BorderRadius.circular (10.0), ),
                     ),
-                  )
+
+                  ),
+                   SizedBox(
+                    height: 40,
+                  ),
+                  TextButton(onPressed:(){
+                    Navigator.pushAndRemoveUntil(context,
+                        MaterialPageRoute(builder: (context) => Login(),), (route) => false);
+                  } ,
+                      child: Text("cancel",style: TextStyle(color: Colors.grey,fontSize: 17),)),
+
                 ],
               ),
             ),

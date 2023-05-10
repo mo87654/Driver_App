@@ -3,11 +3,23 @@ import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/components/buttons.dart';
 
-class HelpPage extends StatelessWidget {
+
+class HelpPage extends StatefulWidget {
+  @override
+  State<HelpPage> createState() => _HelpPageState();
+}
+
+class _HelpPageState extends State<HelpPage> {
   var formkey = GlobalKey<FormState>();
+
   TextEditingController _controllerEmail = TextEditingController();
+
   TextEditingController _controllerProblem = TextEditingController();
+
+  bool isLoading = false;
+
   Widget build(BuildContext context) {
     return Scaffold(
 
@@ -86,71 +98,77 @@ class HelpPage extends StatelessWidget {
                   ),
                 ),
               ),
-              //SizedBox(height: 220.0),
-              Container(
-                height: 45,
-                width: double.infinity,
-                padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                child: MaterialButton(
-                  onPressed: (){
+              SizedBox(height: 220.0),
+              appButton(
+                isLoading: isLoading,
+                text: 'Save',
+                function: ()async{
+                  if (formkey.currentState!.validate()) {
+                    setState(() {
+                      isLoading = true;
+                    });
                     Map<String,String> dataToSave={
                       'Email':_controllerEmail.text ,
                       'ProblemDescription' :_controllerProblem.text
-
                     };
-
                     FirebaseFirestore.instance.collection('problems').add(dataToSave);
-                    //FirebaseAuth.instance.confirmPasswordReset(code: code, newPassword: newPassword)u;
 
-                    if (formkey.currentState!.validate())
-                    {
+                    setState(() {
+                      isLoading = false;
+                    });
 
-                    }
-                  },
-
-                  child:Text(
-                    'Save',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-
-                    ),
-
-                  ),
-                  color: Color(0xff515281),
-                  shape:RoundedRectangleBorder (
-                    borderRadius: BorderRadius.circular (10.0), ),
-
-
-                ),
-
+                    Navigator.pop(context);
+                  }
+                },
               ),
+              // Container(
+              //   height: 45,
+              //   width: double.infinity,
+              //   padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
+              //   child: MaterialButton(
+              //     onPressed: (){
+              //       Map<String,String> dataToSave={
+              //         'Email':_controllerEmail.text ,
+              //         'ProblemDescription' :_controllerProblem.text
+              //
+              //       };
+              //
+              //       FirebaseFirestore.instance.collection('problems').add(dataToSave);
+              //       //FirebaseAuth.instance.confirmPasswordReset(code: code, newPassword: newPassword)u;
+              //
+              //       if (formkey.currentState!.validate())
+              //       {
+              //
+              //       }
+              //     },
+              //
+              //     child:Text(
+              //       'Save',
+              //       style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 17,
+              //
+              //       ),
+              //
+              //     ),
+              //     color: Color(0xff515281),
+              //     shape:RoundedRectangleBorder (
+              //       borderRadius: BorderRadius.circular (10.0), ),
+              //
+              //
+              //   ),
+              //
+              // ),
               SizedBox(
                 height: 25,
               ),
-              Container(
-                height: 45,
-                width: double.infinity,
-                padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                child: MaterialButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child:Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
+              appButton(
+                buttonColor:  Color(0xff818181),
+                text: 'Cancel',
+                function: (){
+                  Navigator.pop(context);
+                },
 
-                    ),
-
-                  ),
-                  color: Color(0xff818181),
-                  shape:RoundedRectangleBorder (
-                    borderRadius: BorderRadius.circular (10.0), ),
-
-
-                ),
               ),
             ],
           ),

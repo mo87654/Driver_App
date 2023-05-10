@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../../shared/components/colors.dart';
+import '../../shared/components/buttons.dart';
 
-class PersonalInfo extends StatelessWidget {
+class PersonalInfo extends StatefulWidget {
+  @override
+  State<PersonalInfo> createState() => _PersonalInfoState();
+}
+
+class _PersonalInfoState extends State<PersonalInfo> {
   var formkey = GlobalKey<FormState>();
+
+  bool isLoading =false;
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
@@ -82,56 +91,77 @@ class PersonalInfo extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 140.0),
-              Container(
-                height: 45,
-                width: double.infinity,
-                padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                child: MaterialButton(
-                  onPressed: (){
-                    if (formkey.currentState!.validate())
-                    {
+              appButton(
+                isLoading: isLoading,
+                text: 'Save',
+                function: ()async{
+                  if (formkey.currentState!.validate()) {
 
-                    }
-                  },
-                  child:Text(
-                    'Save',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-
-                    ),
-
-                  ),
-                  color: Color(0xff014EB8),
-                  shape:RoundedRectangleBorder (
-                    borderRadius: BorderRadius.circular (10.0), ),
-
-
-                ),
+                  }
+                },
               ),
+              // Container(
+              //   height: 45,
+              //   width: double.infinity,
+              //   padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
+              //   child: MaterialButton(
+              //     onPressed: (){
+              //       if (formkey.currentState!.validate())
+              //       {
+              //
+              //       }
+              //     },
+              //     child:Text(
+              //       'Save',
+              //       style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 17,
+              //
+              //       ),
+              //
+              //     ),
+              //     color: Color(0xff014EB8),
+              //     shape:RoundedRectangleBorder (
+              //       borderRadius: BorderRadius.circular (10.0), ),
+              //
+              //
+              //   ),
+              // ),
               SizedBox(
                 height: 25,
               ),
-              Container(
-                height: 45,
-                width: double.infinity,
-                padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                child: MaterialButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child:Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                    ),
-                  ),
-                  color: Color(0xff818181),
-                  shape:RoundedRectangleBorder (
-                    borderRadius: BorderRadius.circular (10.0), ),
-                ),
+
+              appButton(
+                buttonColor:  Color(0xff818181),
+                isLoading: isLoading,
+                text: 'Cancel',
+                function: (){
+                  Navigator.pop(context);
+                },
+
               ),
+
+
+              // Container(
+              //   height: 45,
+              //   width: double.infinity,
+              //   padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
+              //   child: MaterialButton(
+              //     onPressed: (){
+              //       Navigator.pop(context);
+              //     },
+              //     child:Text(
+              //       'Cancel',
+              //       style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 17,
+              //       ),
+              //     ),
+              //     color: Color(0xff818181),
+              //     shape:RoundedRectangleBorder (
+              //       borderRadius: BorderRadius.circular (10.0), ),
+              //   ),
+              // ),
             ],
           ),
         ),
