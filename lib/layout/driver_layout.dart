@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _DriverLayoutState extends State<DriverLayout> {
     });
     getJson(); //her lies json get <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   }
+
   double? height;
   double? width;
   var currentIndex = 3;
@@ -64,7 +66,7 @@ class _DriverLayoutState extends State<DriverLayout> {
       Text(' '),
       driverLeading(
           onpressedfun: (){
-            //notification();
+            notification();
           }
       ),
       driverLeading(
@@ -349,9 +351,10 @@ class _DriverLayoutState extends State<DriverLayout> {
       {
         for(var j=0;j<MACaddress.length;j++)
           {
+            Completer<void> completer = Completer<void>();
             if(macFromESP[i]['MAC']==MACaddress[j])
               {
-                await getStudentData(MACaddress[j]).then((value){
+                await getStudentData(MACaddress[j]).then((value) async {
                   if(studentsData.isNotEmpty)
                   {
                     for(var k=0;k<studentsData.length;k++)
@@ -363,20 +366,22 @@ class _DriverLayoutState extends State<DriverLayout> {
                      // print('student exist');
                     }else
                     {
-                      pop_upMessage();
-                     // print('not exist show pop up');
+                      pop_upMessage(completer);
+                      await completer.future;
+                      // print('not exist show pop up');
                     }
                   }else
                   {
-                    pop_upMessage();
-                   // print('first show pop up');
+                    pop_upMessage(completer);
+                    await completer.future;
+                    print('first show pop up');
                   }
                 });
               }
           }
       }
   }
-  Future pop_upMessage(){
+  Future pop_upMessage(completer){
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -465,6 +470,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                                   );*/
                                   setState(() {});
                                   Navigator.pop(context);
+                                  completer.complete();
                                 },
                                 child: Text(
                                   'APPROVE',
@@ -480,6 +486,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                               ),
                               MaterialButton(
                                 onPressed:(){
+                                  completer.complete();
                                   Navigator.pop(context);
                                 },
                                 child: Text(
