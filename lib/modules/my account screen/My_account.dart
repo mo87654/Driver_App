@@ -99,13 +99,13 @@ class _MyAccountState extends State<MyAccount> {
 
 
           Padding(
-            padding: const EdgeInsets.only(top: 25, left: 15),
+            padding: const EdgeInsets.only(right: 25, left: 25),
             child: Column(
 
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
+                    padding: EdgeInsets.only(top: 30.0),
                     child: FutureBuilder(
                       future: getuserinfo(),
                       builder: (_, AsyncSnapshot snapshot) {
@@ -119,23 +119,30 @@ class _MyAccountState extends State<MyAccount> {
                           controller: nameController,
                           enabled: false,
                           decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                width: 1.0,
+                              ),
+                            ),
                             labelText: 'your name',
                           ),
                           readOnly: true,
                           style: TextStyle
                             (
                             fontWeight: FontWeight.bold,
-                            fontSize: 24,
+                            fontSize: 22,
                           ),
 
                         );
                       },
                     ),
+
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
-                    child:FutureBuilder(
+                    padding: EdgeInsets.only(top: 30.0),
+                    child: FutureBuilder(
                       future: getuserinfo(),
                       builder: (_, AsyncSnapshot snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting) {
@@ -148,14 +155,20 @@ class _MyAccountState extends State<MyAccount> {
                           controller: emailController,
                           enabled: false,
                           decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                width: 2.0,
+                              ),
+                            ),
                             labelText: 'your email',
                           ),
                           readOnly: true,
-                            style: TextStyle
-                             (
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                                  ),
+                          style: TextStyle
+                            (
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
 
                         );
                       },
