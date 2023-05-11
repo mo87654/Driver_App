@@ -32,7 +32,8 @@ class _MyAccountState extends State<MyAccount> {
   Color purple = const Color.fromRGBO(38, 107, 128, 0.9490196078431372);
   Color lpurplet = const Color.fromRGBO(0, 102, 128, 0.9490196078431372);
   Color white = const Color.fromRGBO(254, 254, 254, 1.0);
-
+  final emailController = TextEditingController();
+  final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -107,40 +108,57 @@ class _MyAccountState extends State<MyAccount> {
                     padding: EdgeInsets.only(bottom: 25.0),
                     child: FutureBuilder(
                       future: getuserinfo(),
-                      builder: (_ , AsyncSnapshot snapshot){
-
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return Center( child: CircularProgressIndicator());
+                      builder: (_, AsyncSnapshot snapshot) {
+                        if(snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
                         }
-                        return Text(snapshot.data['name'].toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+
+                        nameController.text = snapshot.data['name'].toString();
+                        return TextFormField(
+
+                          controller: nameController,
+                          enabled: false,
+                          decoration: InputDecoration(
+                            labelText: 'your name',
                           ),
+                          readOnly: true,
+                          style: TextStyle
+                            (
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+
                         );
                       },
                     ),
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(top: 25.0),
-                    child: FutureBuilder(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child:FutureBuilder(
                       future: getuserinfo(),
-                      builder: (_ , AsyncSnapshot snapshot){
-
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return Center( child: CircularProgressIndicator());
+                      builder: (_, AsyncSnapshot snapshot) {
+                        if(snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
                         }
-                        return Text(snapshot.data['email'].toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        // تعيين النص المستلم من قاعدة البيانات في حقل Textformfield
+                        emailController.text = snapshot.data['email'].toString();
+                        return TextFormField(
 
+                          controller: emailController,
+                          enabled: false,
+                          decoration: InputDecoration(
+                            labelText: 'your email',
                           ),
+                          readOnly: true,
+                            style: TextStyle
+                             (
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                                  ),
+
                         );
-
                       },
-
                     ),
 
                   ),
