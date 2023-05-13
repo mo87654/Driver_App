@@ -51,7 +51,7 @@ class gmailMessage extends StatelessWidget {
                    Icon(
                     Icons.check_circle_rounded,
                     size: 70,
-                    color: Color(0xff014EB8),
+                    color: Color(0xff4d6aaa),
                   ),
                   SizedBox(
                     height: height * .85 * .1,
@@ -112,7 +112,7 @@ class gmailMessage extends StatelessWidget {
                           Icon(Icons.mail,color: Colors.orange,)
                         ],
                       ),
-                      color: Color(0xff014EB8),
+                      color: Color(0xff4d6aaa),
                       shape:RoundedRectangleBorder (
                         borderRadius: BorderRadius.circular (10.0), ),
                     ),

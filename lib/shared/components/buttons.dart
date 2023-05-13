@@ -9,7 +9,7 @@ Widget appButton({
   double height = 45,
   double width = double.infinity,
   double radius = 10.0,
-  Color buttonColor = Colors.blueAccent,
+  Color buttonColor = const Color(0xff4d6aaa),
   bool isLoading = false,
 
 

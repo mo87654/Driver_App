@@ -307,7 +307,7 @@ class _ForgetPassword3State extends State<ForgetPassword3> {
                       fontSize: 17,
                     ),
                   ),
-                  color: Color(0xff014EB8),
+                  color: Color(0xff4d6aaa),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0),),
                 ),

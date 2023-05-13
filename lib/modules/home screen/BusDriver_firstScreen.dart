@@ -98,6 +98,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
               height: height * .07,
             ),
             FloatingActionButton(
+              backgroundColor: Color(0xff4d6aaa),
                 onPressed: ()async{
                   await getData();
                   showDialog(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,14 @@ class _DriverLayoutState extends State<DriverLayout> {
     'Addresses List',
     'My account'
   ];
+  int _currentIndex = 0;
+  final List<IconData> _iconList = [
+    Icons.account_box_outlined,
+    Icons.location_on,
+    Icons.view_list_outlined,
+    Icons.home_outlined,
+
+  ];
 
   final user =  FirebaseAuth.instance.currentUser!;
 
@@ -86,9 +95,9 @@ class _DriverLayoutState extends State<DriverLayout> {
       drawerEnableOpenDragGesture: false,
       appBar: AppBar(
         backgroundColor: appColor(),
-        leading: leadingicon[3 - currentIndex],
+        leading: leadingicon[3 - _currentIndex],
         title: Text(
-          title[3 - currentIndex],
+          title[3 - _currentIndex],
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -256,60 +265,31 @@ class _DriverLayoutState extends State<DriverLayout> {
 
         ),
       ),
-      body:driverScreens[3 - currentIndex] ,
-      bottomNavigationBar: BottomNavigationBar(
-          iconSize: 35,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: currentIndex,
-          backgroundColor: appColor(),
-          type: BottomNavigationBarType.fixed,
-          onTap: (index){
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          items:[
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.account_box_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                  Icons.account_box,
-                )
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.location_on_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                    Icons.location_on
-                )
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.list_alt,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                  Icons.view_list_outlined,
-                )
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
+      body:driverScreens[3 - _currentIndex] ,
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        splashRadius: 50,
+        iconSize: 30,
+        inactiveColor: Colors.white,
+        activeColor: Colors.white,
+        backgroundColor: Color(0xff4d6aaa),
+        splashColor: Colors.cyan,
+        icons: _iconList,
+        activeIndex: _currentIndex,
+        splashSpeedInMilliseconds: 500,
+        gapLocation: GapLocation.none,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        notchSmoothness: NotchSmoothness.defaultEdge,
+        shadow: const BoxShadow(
+          offset: Offset(0, 1),
+          blurRadius: 15,
+          spreadRadius: 0.7,
+          color: Color(0xff4d6aaa),
+        ),
 
-                  Icons.home_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                    Icons.home
-                )
-            ),
-          ]
+
+        onTap: (index) => setState(() => _currentIndex = index),
+
       ),
     );
   }
