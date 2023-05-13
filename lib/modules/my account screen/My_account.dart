@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -27,19 +28,42 @@ class _MyAccountState extends State<MyAccount> {
     return result.data()??['name'];
 
   }
+  Future<void> savephoto(Path) async {
+    SharedPreferences saveimage = await SharedPreferences.getInstance();
+    saveimage.setString("imagepath", Path);
 
+
+  }
+
+  Future<void> loadimage() async {
+    SharedPreferences saveimage = await SharedPreferences.getInstance();
+    setState(() {
+      _imagepath = saveimage.getString("imagepath");
+    });
+  }
+
+  String? _imagepath;
   final ImagePicker picker = ImagePicker();
   Color purple = const Color.fromRGBO(38, 107, 128, 0.9490196078431372);
   Color lpurplet = const Color.fromRGBO(0, 102, 128, 0.9490196078431372);
   Color white = const Color.fromRGBO(254, 254, 254, 1.0);
+
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   @override
+  void initState() {
+
+    super.initState();
+    loadimage();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
 
             children: [
               Container(
@@ -52,10 +76,28 @@ class _MyAccountState extends State<MyAccount> {
                     Align(
 
                       alignment: AlignmentDirectional.topStart,
-                      child: Container(child: Image.asset('assets/images/background2.png',
-                        fit: BoxFit.cover ,),
-                        width: double.infinity,
-                        height: 200,
+                      child: CustomPaint(
+                        painter: HeaderCurvedContainer(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+
+                          child: Align(
+                            alignment: AlignmentDirectional.topCenter,
+                            child: Padding(
+                              padding: EdgeInsets.all(50),
+                              child: Text(
+                                "",
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  letterSpacing: 1.5,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
 
@@ -63,14 +105,16 @@ class _MyAccountState extends State<MyAccount> {
                         alignment: AlignmentDirectional.bottomEnd,
                      clipBehavior: Clip.none,
                       children:<Widget>[
-                    CircleAvatar(
+                        _imagepath != null?
+                        CircleAvatar(backgroundImage: FileImage(File(_imagepath!)),radius: 80,)
+                     :CircleAvatar(
                         radius: 64,
                         backgroundImage: _imageFile == null ?
                          AssetImage("assets/images/User3.jpg")
                             : FileImage(File(_imageFile!.path)) as ImageProvider),
 
                     CircleAvatar(
-                      backgroundColor:  const Color(0xff515281),
+                      backgroundColor:  const Color(0xff4d6aaa),
                       radius: 16,
                       child: InkWell(
                         onTap: () {
@@ -81,13 +125,29 @@ class _MyAccountState extends State<MyAccount> {
                             );
                           });
                         },
-                        child: Icon(Icons.edit, color: white),
+                        child: Icon(Icons.camera_alt_outlined, color: white),
                       ),
                     ),
           ]
 
           ),
                   ],
+                ),
+              ),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.save_as_outlined,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  savephoto(_imageFile?.path);
+                  loadimage();
+
+                },
+                label: const Text("save",
+                  style: TextStyle(
+                    color: Colors.black,
+
+                  ),
                 ),
               ),
             ],
@@ -198,7 +258,7 @@ class _MyAccountState extends State<MyAccount> {
 
   Widget bottomSheet() {
     return Container(
-      color: const Color.fromRGBO(159, 148, 171, 1.0),
+      color: const Color(0xff8093bc),
       height: 100,
       width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(
@@ -216,41 +276,43 @@ class _MyAccountState extends State<MyAccount> {
           const SizedBox(
             height: 20,
           ),
-          Row(
+          Expanded(
+            child: Row(
 
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              OutlinedButton.icon(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                OutlinedButton.icon(
 
-                icon: const Icon(Icons.camera,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  takePhoto(ImageSource.camera);
-                },
-                label: const Text("Camera",
-                  style: TextStyle(
+                  icon: const Icon(Icons.camera,
                     color: Colors.black,
+                  ),
+                  onPressed: () {
+                    takePhoto(ImageSource.camera);
+                  },
+                  label: const Text("Camera",
+                    style: TextStyle(
+                      color: Colors.black,
 
+                    ),
                   ),
                 ),
-              ),
-              OutlinedButton.icon(
+                OutlinedButton.icon(
 
-                icon: const Icon(Icons.image,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  takePhoto(ImageSource.gallery);
-                },
-                label: const Text("Gallery",
-                  style: TextStyle(
-                      color: Colors.black
+                  icon: const Icon(Icons.image,
+                    color: Colors.black,
                   ),
-                ),
+                  onPressed: () {
+                    takePhoto(ImageSource.gallery);
+                  },
+                  label: const Text("Gallery",
+                    style: TextStyle(
+                        color: Colors.black
+                    ),
+                  ),
 
-              ),
-            ],
+                ),
+              ],
+            ),
           )
         ],
       ),
@@ -282,3 +344,18 @@ class _MyAccountState extends State<MyAccount> {
   }
 }
 
+class HeaderCurvedContainer extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()..color = Color(0xff4d6aaa);
+    Path path = Path()
+      ..relativeLineTo(0, 150)
+      ..quadraticBezierTo(size.width / 2, 225, size.width, 150)
+      ..relativeLineTo(0, -150)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
