@@ -1,10 +1,9 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_app/layout/driver_layout.dart';
+import 'package:driver_app/shared/components/buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../../shared/components/buttons.dart';
 import '../New_forgetPasswordScreen/resetEmail_Screen.dart';
 
 
@@ -12,17 +11,37 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
+
+
 class _LoginState extends State<Login> {
   var formkey = GlobalKey<FormState>();
 
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+
+
   bool showpassword = true;
   bool isLoading = false;
-  final emailRegex = RegExp(r'^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$');
-  //String? selectedItem;
-  @override
-  String? selectedItem = 'User';
+  final emailRegex = RegExp(r"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$");
+
+
+
+  getCategory() async {
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('Drivers')
+        .where('email', isEqualTo: emailcontroller.text)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      var category = querySnapshot.docs.first.data()['category'];
+      print(category);
+      print("================================");
+      return category;
+    } else {
+      return null;
+    }
+  }
+
+
 
   signin() async {
     if (formkey.currentState!.validate()) {
@@ -34,48 +53,49 @@ class _LoginState extends State<Login> {
         setState(() {
           isLoading = true;
         });
-
         return userCredential;
 
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
+        if (e.code == 'invalid-email') {
+          print("not valid email");
           setState(() {
             isLoading = false;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(backgroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(vertical: 18),
-              content: Text(e.message ??"",style: TextStyle(fontSize: 15),)),);
-      });
-    }
-        else if (e.code == 'invalid-email') {
-          setState(() {
-            isLoading = false;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(backgroundColor: Colors.black,
+              SnackBar(backgroundColor: Colors.black38,
                   padding: EdgeInsets.symmetric(vertical: 18),
                   content: Text(e.message ??"",style: TextStyle(fontSize: 15),)),);
           });
+
         }
         else if (e.code == 'wrong-password') {
+          print("not valid email");
           setState(() {
             isLoading = false;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(backgroundColor: Colors.black,
+              SnackBar(backgroundColor: Colors.black38,
                   padding: EdgeInsets.symmetric(vertical: 18),
                   content: Text(e.message ??"",style: TextStyle(fontSize: 15),)),);
           });
+
+
         }
+
+
       }catch (e) {
         setState(() {
           isLoading = false;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(backgroundColor: Colors.black,
+            SnackBar(backgroundColor: Colors.black38,
                 padding: EdgeInsets.symmetric(vertical: 18),
                 content: Text(e.toString(),style: TextStyle(fontSize: 15),)),);
         });
+
       }
+
     } else{return null;}
   }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -235,73 +255,45 @@ class _LoginState extends State<Login> {
                 text: 'Login',
                 isLoading: isLoading,
 
-                  function:  () async {
+                function:  () async {
+                  setState(() {
+                    isLoading = true;
+                  });
 
-                    setState(() {
-                      isLoading =  true;
-                    });
+                  var user = await signin();
+                  var category = await getCategory();
 
-                    var user = await signin();
-                    if (user != null) {
+                  if (user != null ) {
+                    if(category == "driver"){
                       setState(() {
-                        isLoading =  false;
+                        isLoading = false;
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) => DriverLayout(),));
                       });
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) => DriverLayout(),));
-
+                    } else{
+                      setState(() {
+                        isLoading = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(backgroundColor: Colors.black38,
+                              padding: EdgeInsets.symmetric(vertical: 18),
+                              content: Text(" Access  rejected, you must have a driver account to login ",
+                                style: TextStyle(fontSize: 15),)),);
+                      });
                     }
-                  },
-
-                    ),
 
 
-
-                    // SizedBox(height: 20,),
-              //       Container(
-              //       height: 45,
-              //       width: double.infinity,
-              //       padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
-              //       child: MaterialButton(
-              //
-              //       onPressed: () async {
-              //       setState(() {
-              //       isLoading = true;
-              //       });
-              //
-              //       var user =  await signin();
-              //       if (user != null) {
-              //
-              //       setState(() {
-              //       isLoading = false;
-              //       });
-              //       Navigator.pushReplacement(context, MaterialPageRoute(
-              //       builder: (context) => DriverLayout(),));
-              //
-              //       }
-              //
-              //
-              //
-              //       }
-              //     ,
-              //     child:isLoading
-              //         ? SpinKitCircle(
-              //       color: Colors.white,
-              //       size: 50.0,
-              //     )
-              //         :  Text(
-              //       'Log in',
-              //       style: TextStyle(
-              //         color: Colors.white,
-              //         fontSize: 17,
-              //       ),
-              //     ),
-              //     color: Color(0xff014EB8),
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(10.0),),
-              //
-              //
-              //   ),
-              // )
+                  }else{
+                    setState(() {
+                      isLoading = false;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(backgroundColor: Colors.black38,
+                            padding: EdgeInsets.symmetric(vertical: 18),
+                            content: Text("  please Enter a valid username and password  ",
+                              style: TextStyle(fontSize: 15),)),);
+                    });
+                  }
+                },
+              ),
             ],
           ),
         ),
