@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driver_app/shared/cubit/states.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../modules/addresses screen/driverAddressesPage.dart';
 import '../modules/home screen/BusDriver_firstScreen.dart';
 import '../modules/my account screen/My_account.dart';
@@ -13,6 +15,7 @@ import '../shared/components/SignoutMessage.dart';
 import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
 import '../shared/components/local db methods.dart';
+import '../shared/cubit/cubit.dart';
 
 class DriverLayout extends StatefulWidget {
 
@@ -82,234 +85,242 @@ class _DriverLayoutState extends State<DriverLayout> {
           }
       ),
     ];
-    return Scaffold(
-      drawerEnableOpenDragGesture: false,
-      appBar: AppBar(
-        backgroundColor: appColor(),
-        leading: leadingicon[3 - currentIndex],
-        title: Text(
-          title[3 - currentIndex],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-      ),
-      drawer:   SafeArea(
-        child: Drawer(
-          child: Column(
-            children: [
-              ListTile(
-                leading:  const Icon(Icons.person),
-             title: FutureBuilder(
-            future: getuserinfo(),
-            builder: (_ , AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              return Text(snapshot.data['name'].toString(),
+    return BlocProvider(
+      create: (BuildContext context)=>AppCubit(),
+      child: BlocConsumer<AppCubit, AppStates>(
+        listener: (context, state){},
+          builder: (context, state){
+          return Scaffold(
+            drawerEnableOpenDragGesture: false,
+            appBar: AppBar(
+              backgroundColor: appColor(),
+              leading: leadingicon[3 - currentIndex],
+              title: Text(
+                title[3 - currentIndex],
                 style: TextStyle(
-                  fontSize: 17,
                   fontWeight: FontWeight.bold,
-
-                ),
-              );
-
-            },
-          ),
-
-          subtitle: FutureBuilder(
-            future: getuserinfo(),
-            builder: (_ , AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              return Text(snapshot.data['email'].toString(),
-
-              );
-
-            },
-          ),
-                onTap: () {
-
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 24,top: 24, bottom: 16),
-                child: Divider(
-                  color: Colors.black26,
-                  height: 1,
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.perm_contact_cal_outlined),
-                title: const Text(' Profile Details ',
-                  style: TextStyle(
-                      fontSize: 17
-                  ),
-                ),
 
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => PersonalInfo()
-                      )
-                  );
-                },
-              ),
+            ),
+            drawer:   SafeArea(
+              child: Drawer(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading:  const Icon(Icons.person),
+                      title: FutureBuilder(
+                        future: getuserinfo(),
+                        builder: (_ , AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          return Text(snapshot.data['name'].toString(),
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
 
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      leading: const Icon(Icons.notification_important),
-                      title: const Text('Notifications',
+                            ),
+                          );
+
+                        },
+                      ),
+
+                      subtitle: FutureBuilder(
+                        future: getuserinfo(),
+                        builder: (_ , AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          return Text(snapshot.data['email'].toString(),
+
+                          );
+
+                        },
+                      ),
+                      onTap: () {
+
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 24,top: 24, bottom: 16),
+                      child: Divider(
+                        color: Colors.black26,
+                        height: 1,
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.perm_contact_cal_outlined),
+                      title: const Text(' Profile Details ',
                         style: TextStyle(
                             fontSize: 17
                         ),
+                      ),
 
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => PersonalInfo()
+                            )
+                        );
+                      },
+                    ),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            leading: const Icon(Icons.notification_important),
+                            title: const Text('Notifications',
+                              style: TextStyle(
+                                  fontSize: 17
+                              ),
+
+                            ),
+
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 40.0),
+                          child: Switch(onChanged: (bool value) {  }, value: true, activeColor: appColor(),),
+                        ),
+                      ],
+                    ),
+
+                    ListTile(
+                      leading: const Icon(Icons.lock),
+                      title: const Text('Change Password',
+                        style: TextStyle(
+                            fontSize: 17
+                        ),
+                      ),
+
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => ChangePassword()
+                            )
+                        );
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: Divider(
+                        color: Colors.black26,
+                        height: 1,
+                      ),
+                    ),
+
+                    ListTile(
+                      leading: const Icon(Icons.error),
+                      title: const Text('About us',
+                        style: TextStyle(
+                            fontSize: 17
+                        ),
                       ),
 
                       onTap: () {
                         Navigator.pop(context);
                       },
-
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 40.0),
-                    child: Switch(onChanged: (bool value) {  }, value: true, activeColor: appColor(),),
-                  ),
-                ],
-              ),
 
-              ListTile(
-                leading: const Icon(Icons.lock),
-                title: const Text('Change Password',
-                  style: TextStyle(
-                      fontSize: 17
-                  ),
+                    ListTile(
+                      leading: const Icon(Icons.help),
+                      title: const Text('Help!',
+                        style: TextStyle(
+                            fontSize: 17
+                        ),
+                      ),
+
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => HelpPage()
+                            )
+                        );
+                      },
+                    ),
+
+                    ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Log Out',
+                        style: TextStyle(
+                            fontSize: 17
+                        ),
+                      ),
+
+                      onTap: () {showDialog(
+                        context: context, builder: (BuildContext context) => SignOutMessage(),
+                      );
+                      },
+                    ),
+                  ],
                 ),
 
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => ChangePassword()
+
+              ),
+            ),
+            body:driverScreens[3 - currentIndex] ,
+            bottomNavigationBar: BottomNavigationBar(
+                iconSize: 35,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                currentIndex: currentIndex,
+                backgroundColor: appColor(),
+                type: BottomNavigationBarType.fixed,
+                onTap: (index){
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+                items:[
+                  BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.account_box_outlined,
+                      ),
+                      label: ' ',
+                      activeIcon: Icon(
+                        Icons.account_box,
                       )
-                  );
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Divider(
-                  color: Colors.black26,
-                  height: 1,
-                ),
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.error),
-                title: const Text('About us',
-                  style: TextStyle(
-                      fontSize: 17
                   ),
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.help),
-                title: const Text('Help!',
-                  style: TextStyle(
-                      fontSize: 17
-                  ),
-                ),
-
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => HelpPage()
+                  BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.location_on_outlined,
+                      ),
+                      label: ' ',
+                      activeIcon: Icon(
+                          Icons.location_on
                       )
-                  );
-                },
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Log Out',
-                  style: TextStyle(
-                      fontSize: 17
                   ),
-                ),
+                  BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.list_alt,
+                      ),
+                      label: ' ',
+                      activeIcon: Icon(
+                        Icons.view_list_outlined,
+                      )
+                  ),
+                  BottomNavigationBarItem(
+                      icon: Icon(
 
-                onTap: () {showDialog(
-                  context: context, builder: (BuildContext context) => SignOutMessage(),
-                );
-                  },
-              ),
-            ],
-          ),
-
-
-        ),
-      ),
-      body:driverScreens[3 - currentIndex] ,
-      bottomNavigationBar: BottomNavigationBar(
-          iconSize: 35,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: currentIndex,
-          backgroundColor: appColor(),
-          type: BottomNavigationBarType.fixed,
-          onTap: (index){
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          items:[
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.account_box_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                  Icons.account_box,
-                )
+                        Icons.home_outlined,
+                      ),
+                      label: ' ',
+                      activeIcon: Icon(
+                          Icons.home
+                      )
+                  ),
+                ]
             ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.location_on_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                    Icons.location_on
-                )
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.list_alt,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                  Icons.view_list_outlined,
-                )
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-
-                  Icons.home_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                    Icons.home
-                )
-            ),
-          ]
+          );
+          }
       ),
     );
   }
@@ -461,14 +472,13 @@ class _DriverLayoutState extends State<DriverLayout> {
                             children: [
                               MaterialButton(
                                 onPressed:(){
-                                  /*insertdatabase(
-                                    name: studentData[0]['name'],
-                                    email: studentData[0]['email'],
-                                    phone: studentData[0]['tele-num'],
-                                    grad: studentData[0]['grad'],
-                                    mac: studentData[0]['MAC-address'],
-                                  );*/
-                                  setState(() {});
+                                  insertdatabase(
+                                    name: studentPopUpInfo[0]['name'],
+                                    email: studentPopUpInfo[0]['email'],
+                                    phone: studentPopUpInfo[0]['tele-num'],
+                                    grad: studentPopUpInfo[0]['grad'],
+                                    mac: studentPopUpInfo[0]['MAC-address'],
+                                  );
                                   Navigator.pop(context);
                                   completer.complete();
                                 },
