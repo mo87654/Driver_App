@@ -48,7 +48,8 @@ dependencies:
   url_launcher: ^6.1.10
   flutter_bloc: ^8.1.2
   bloc: ^8.1.1
-
+  animated_bottom_navigation_bar: ^1.2.0
+  shared_preferences: ^2.1.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -62,16 +63,15 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icons/icon.png"
+  image_path: "assets/icons/icon3.png"
 
 
 
 flutter_native_splash:
-  color: "#42a5f5"
-  image: assets/images/splash4.png
+  image: assets/images/splash.png
   ios: true
   android_gravity: center
-  background_image: "assets/images/background2.png"
+  background_image: "assets/images/background.png"
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

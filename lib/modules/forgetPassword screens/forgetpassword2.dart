@@ -193,7 +193,7 @@ class _ForgetPassword2State extends State<ForgetPassword2> {
                     }
                   }
                 },
-                color: const Color(0xff014EB8),
+                color: const Color(0xff4d6aaa),
                 shape:RoundedRectangleBorder (
                   borderRadius: BorderRadius.circular (10.0), ),
                 child:isLogin
