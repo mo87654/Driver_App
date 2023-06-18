@@ -78,6 +78,7 @@ class _DriverLayoutState extends State<DriverLayout> {
       Text(' '),
       driverLeading(
           onpressedfun: (){
+            print(macFromESP);
             notification();
           }
       ),
@@ -98,214 +99,216 @@ class _DriverLayoutState extends State<DriverLayout> {
       create: (BuildContext context)=>AppCubit(),
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context, state){},
-          builder: (context, state){
-          return Scaffold(
-            drawerEnableOpenDragGesture: false,
-            appBar: AppBar(
-              backgroundColor: appColor(),
-              leading: leadingicon[3 - _currentIndex],
-              title: Text(
-                title[3 - _currentIndex],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          builder: (context, state) {
+            return Scaffold(
+              drawerEnableOpenDragGesture: false,
+              appBar: AppBar(
+                backgroundColor: appColor(),
+                leading: leadingicon[3 - _currentIndex],
+                title: Text(
+                  title[3 - _currentIndex],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+
               ),
+              drawer: SafeArea(
+                child: Drawer(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.person),
+                        title: FutureBuilder(
+                          future: getuserinfo(),
+                          builder: (_, AsyncSnapshot snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            return Text(snapshot.data['name'].toString(),
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
 
-            ),
-            drawer:   SafeArea(
-              child: Drawer(
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading:  const Icon(Icons.person),
-                      title: FutureBuilder(
-                        future: getuserinfo(),
-                        builder: (_ , AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          return Text(snapshot.data['name'].toString(),
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
+                        ),
 
-                            ),
-                          );
+                        subtitle: FutureBuilder(
+                          future: getuserinfo(),
+                          builder: (_, AsyncSnapshot snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            return Text(snapshot.data['email'].toString(),
+
+                            );
+                          },
+                        ),
+                        onTap: () {
 
                         },
                       ),
-
-                      subtitle: FutureBuilder(
-                        future: getuserinfo(),
-                        builder: (_ , AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          return Text(snapshot.data['email'].toString(),
-
-                          );
-
-                        },
-                      ),
-                      onTap: () {
-
-                      },
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 24,top: 24, bottom: 16),
-                      child: Divider(
-                        color: Colors.black26,
-                        height: 1,
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.perm_contact_cal_outlined),
-                      title: const Text(' Profile Details ',
-                        style: TextStyle(
-                            fontSize: 17
+                      const Padding(
+                        padding: EdgeInsets.only(
+                            right: 24, top: 24, bottom: 16),
+                        child: Divider(
+                          color: Colors.black26,
+                          height: 1,
                         ),
                       ),
-
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) => PersonalInfo()
-                            )
-                        );
-                      },
-                    ),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            leading: const Icon(Icons.notification_important),
-                            title: const Text('Notifications',
-                              style: TextStyle(
-                                  fontSize: 17
-                              ),
-
-                            ),
-
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-
+                      ListTile(
+                        leading: const Icon(Icons.perm_contact_cal_outlined),
+                        title: const Text(' Profile Details ',
+                          style: TextStyle(
+                              fontSize: 17
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 40.0),
-                          child: Switch(onChanged: (bool value) {  }, value: true, activeColor: appColor(),),
-                        ),
-                      ],
-                    ),
 
-                    ListTile(
-                      leading: const Icon(Icons.lock),
-                      title: const Text('Change Password',
-                        style: TextStyle(
-                            fontSize: 17
-                        ),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => PersonalInfo()
+                              )
+                          );
+                        },
                       ),
 
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) => ChangePassword()
-                            )
-                        );
-                      },
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Divider(
-                        color: Colors.black26,
-                        height: 1,
-                      ),
-                    ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ListTile(
+                              leading: const Icon(Icons.notification_important),
+                              title: const Text('Notifications',
+                                style: TextStyle(
+                                    fontSize: 17
+                                ),
 
-                    ListTile(
-                      leading: const Icon(Icons.error),
-                      title: const Text('About us',
-                        style: TextStyle(
-                            fontSize: 17
+                              ),
+
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 40.0),
+                            child: Switch(onChanged: (bool value) {},
+                              value: true,
+                              activeColor: appColor(),),
+                          ),
+                        ],
+                      ),
+
+                      ListTile(
+                        leading: const Icon(Icons.lock),
+                        title: const Text('Change Password',
+                          style: TextStyle(
+                              fontSize: 17
+                          ),
                         ),
+
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChangePassword()
+                              )
+                          );
+                        },
                       ),
-
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-
-                    ListTile(
-                      leading: const Icon(Icons.help),
-                      title: const Text('Help!',
-                        style: TextStyle(
-                            fontSize: 17
-                        ),
-                      ),
-
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) => HelpPage()
-                            )
-                        );
-                      },
-                    ),
-
-                    ListTile(
-                      leading: const Icon(Icons.logout),
-                      title: const Text('Log Out',
-                        style: TextStyle(
-                            fontSize: 17
+                      const Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Divider(
+                          color: Colors.black26,
+                          height: 1,
                         ),
                       ),
 
-                      onTap: () {showDialog(
-                        context: context, builder: (BuildContext context) => SignOutMessage(),
-                      );
-                      },
-                    ),
-                  ],
+                      ListTile(
+                        leading: const Icon(Icons.error),
+                        title: const Text('About us',
+                          style: TextStyle(
+                              fontSize: 17
+                          ),
+                        ),
+
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+
+                      ListTile(
+                        leading: const Icon(Icons.help),
+                        title: const Text('Help!',
+                          style: TextStyle(
+                              fontSize: 17
+                          ),
+                        ),
+
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => HelpPage()
+                              )
+                          );
+                        },
+                      ),
+
+                      ListTile(
+                        leading: const Icon(Icons.logout),
+                        title: const Text('Log Out',
+                          style: TextStyle(
+                              fontSize: 17
+                          ),
+                        ),
+
+                        onTap: () {
+                          showDialog(
+                            context: context, builder: (BuildContext context) =>
+                              SignOutMessage(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+
+                ),
+              ),
+              body: driverScreens[3 - _currentIndex],
+              bottomNavigationBar: AnimatedBottomNavigationBar(
+                splashRadius: 50,
+                iconSize: 30,
+                inactiveColor: Colors.white,
+                activeColor: Colors.white,
+                backgroundColor: Color(0xff4d6aaa),
+                splashColor: Colors.cyan,
+                icons: _iconList,
+                activeIndex: _currentIndex,
+                splashSpeedInMilliseconds: 500,
+                gapLocation: GapLocation.none,
+                leftCornerRadius: 32,
+                rightCornerRadius: 32,
+                notchSmoothness: NotchSmoothness.defaultEdge,
+                shadow: const BoxShadow(
+                  offset: Offset(0, 1),
+                  blurRadius: 15,
+                  spreadRadius: 0.7,
+                  color: Color(0xff4d6aaa),
                 ),
 
 
-        ),
-      ),
-      body:driverScreens[3 - _currentIndex] ,
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        splashRadius: 50,
-        iconSize: 30,
-        inactiveColor: Colors.white,
-        activeColor: Colors.white,
-        backgroundColor: Color(0xff4d6aaa),
-        splashColor: Colors.cyan,
-        icons: _iconList,
-        activeIndex: _currentIndex,
-        splashSpeedInMilliseconds: 500,
-        gapLocation: GapLocation.none,
-        leftCornerRadius: 32,
-        rightCornerRadius: 32,
-        notchSmoothness: NotchSmoothness.defaultEdge,
-        shadow: const BoxShadow(
-          offset: Offset(0, 1),
-          blurRadius: 15,
-          spreadRadius: 0.7,
-          color: Color(0xff4d6aaa),
-        ),
+                onTap: (index) => setState(() => _currentIndex = index),
 
+              ),
 
-        onTap: (index) => setState(() => _currentIndex = index),
+            );
 
-                  Icons.home_outlined,
-                ),
-                label: ' ',
-                activeIcon: Icon(
-                    Icons.home
-                )
-            ),
-          ]
+          }
       ),
     );
   }
