@@ -1,10 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-var busid;
- List addresses=[];
- List MACaddress= [];
- List studentPopUpInfo = [];
+
 
 Widget driverLeading({
    required Function? onpressedfun(),

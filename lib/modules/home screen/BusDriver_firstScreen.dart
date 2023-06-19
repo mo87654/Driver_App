@@ -1,10 +1,13 @@
 
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driver_app/shared/cubit/cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../shared/components/components.dart';
-import '../../shared/components/local db methods.dart';
+import '../../shared/components/driverMethods.dart';
+import '../../shared/cubit/states.dart';
 import '../login screen/login.dart';
 
 class BusDriverHome extends StatefulWidget {
@@ -18,7 +21,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
   @override
   void initState() {
     super.initState();
-    getIDs();
+    //getIDs();
     instance.authStateChanges().listen((User? user) {
       if (user == null) {
         Navigator.pushReplacement(
@@ -27,10 +30,8 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         );
       }
     });
-
-
   }
-  List studentData = [];
+  /*List studentData = [];
   List ids = [];
   //List students =[];
   var rand ;
@@ -39,7 +40,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
     await FirebaseFirestore
         .instance
         .collection('Students')
-        .where('Bus id',isEqualTo: busid)
+        .where('Bus id',isEqualTo: busNum)
         .get().then((value) {
       value.docs.forEach((element) {
         setState(() {
@@ -58,46 +59,53 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         .collection('Students')
         .doc(rand).get();
     studentData.add(dataRef.data());
-  }
+  }*/
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Container(
-        color: Color(0xffEBEBEB),
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
+    return BlocConsumer<AppCubit, AppStates>(
+        builder: (context, state){
+          return Container(
+            color: Color(0xffEBEBEB),
+            padding: EdgeInsets.all(10),
+            child: Column(
               children: [
-                Icon(
-                  Icons.person,
-                  size: 30,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '${AppCubit.get(context).studentsData.length}',
+                      style: TextStyle(
+                        fontSize: 22,
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(
-                  width: 10,
+                  height: 10,
                 ),
-                Text(
-                  '${studentsData.length}',
-                  style: TextStyle(
-                    fontSize: 22,
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              height: 1.0,
-              color: Colors.grey,
+                Container(
+                  width: double.infinity,
+                  height: 1.0,
+                  color: Colors.grey,
 
-            ),
-            SizedBox(
-              height: height * .07,
-            ),
-            FloatingActionButton(
+                ),
+                SizedBox(
+                  height: 300,
+                ),
+                IconButton(
+                    onPressed: (){
+                      notification(context);
+                    },
+                    icon: Icon(
+                        Icons.add
+                    )
+                )
+                /*FloatingActionButton(
               backgroundColor: Color(0xff4d6aaa),
                 onPressed: ()async{
                   await getData();
@@ -180,7 +188,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                                           children: [
                                             MaterialButton(
                                               onPressed:(){
-                                                insertdatabase(
+                                                AppCubit.get(context).insertdatabase(
                                                     name: studentData[0]['name'],
                                                     email: studentData[0]['email'],
                                                     phone: studentData[0]['tele-num'],
@@ -227,15 +235,18 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                         );
                       }
                   );
-                }),
-            IconButton(onPressed: ()async{
+                }),*/
+                /*IconButton(onPressed: ()async{
               await FirebaseAuth.instance.signOut();
               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login(),), (route) => false);
 
             },
-                icon: Icon(Icons.logout))
-          ],),
-      ),
+                icon: Icon(Icons.logout))*/
+              ],),
+
+          );
+        },
+        listener: (context, state){}
     );
   }
 }

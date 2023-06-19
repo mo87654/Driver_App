@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driver_app/shared/cubit/cubit.dart';
+import 'package:driver_app/shared/cubit/states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../shared/components/components.dart';
-import '../../shared/components/local db methods.dart';
+import '../../shared/components/driverMethods.dart';
 
 class DriverAddresses extends StatefulWidget {
   @override
@@ -24,85 +27,90 @@ class _DriverAddressesState extends State<DriverAddresses> {
   String _title = "Checkbox Demo";
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10),
-        width: double.infinity,
-        child: Column(
-          children: [
-            Row(
+    return BlocConsumer<AppCubit,AppStates>(
+        listener: (context, state){},
+        builder: (context, state){
+          return Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Column(
               children: [
-                Icon(
-                  Icons.person,
-                  size: 30,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '${AppCubit.get(context).studentsData.length}',
+                      style: TextStyle(
+                        fontSize: 22,
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(
-                  width: 10,
+                  height: 20,
                 ),
-                Text(
-                  '${studentsData.length}',
-                  style: TextStyle(
-                    fontSize: 22,
+                Expanded(
+                  child:_len==0?Center(child: CircularProgressIndicator()):
+                  ListView.separated(
+                    itemBuilder: (context, index){
+                      return Container(
+                        padding: EdgeInsets.all(10),
+                        //height: 80,
+                        decoration: BoxDecoration(
+                          color: Color(0xffC1BDBD),
+                          borderRadius: BorderRadius.circular(10),
+
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                addresses[index],
+                                style: TextStyle(
+                                  fontSize: 24,
+                                ),
+                                //maxLines: 2,
+                              ),
+                            ),
+                            Transform.scale(
+                                scale:1.5,
+                                child: Checkbox(
+                                    value: isChecked[index] ,
+                                    onChanged: (checked){
+                                      setState ((){
+                                        isChecked[index] = checked!;
+                                        _title = _getTitle();                  }
+
+                                      );
+                                    }
+                                )
+                            )
+                          ],
+                        ),
+                      ) ;
+                    },
+                    separatorBuilder: (context, index){
+                      return SizedBox(
+                        height: 20,
+                      );
+                    },
+                    itemCount: addresses.length,
                   ),
                 )
+
+
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child:_len==0?Center(child: CircularProgressIndicator()):
-              ListView.separated(
-                  itemBuilder: (context, index){
-                    return Container(
-                      padding: EdgeInsets.all(10),
-                      //height: 80,
-                      decoration: BoxDecoration(
-                        color: Color(0xffC1BDBD),
-                        borderRadius: BorderRadius.circular(10),
-
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              addresses[index],
-                              style: TextStyle(
-                                fontSize: 24,
-                              ),
-                              //maxLines: 2,
-                            ),
-                          ),
-                          Transform.scale(
-                            scale:1.5,
-                              child: Checkbox(
-                                  value: isChecked[index] ,
-                                  onChanged: (checked){
-                                    setState ((){
-                                      isChecked[index] = checked!;
-                                      _title = _getTitle();                  }
-
-                                    );
-                                  }
-                              )
-                          )
-                        ],
-                      ),
-                    ) ;
-                  },
-                  separatorBuilder: (context, index){
-                    return SizedBox(
-                      height: 20,
-                    );
-                  },
-                  itemCount: addresses.length,
-              ),
-            )
-
-
-          ],
-        ),
-      );
+          );
+        }
+    );
 
   }
 
