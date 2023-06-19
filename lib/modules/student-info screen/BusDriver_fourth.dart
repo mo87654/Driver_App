@@ -1,8 +1,9 @@
 
+import 'package:driver_app/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/components/colors.dart';
-import '../../shared/components/local db methods.dart';
+import '../../shared/components/driverMethods.dart';
 
 class BusdriverStudentInfo extends StatefulWidget {
 
@@ -51,7 +52,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
                   width: 10,
                 ),
                 Text(
-                  '${studentsData.length}',
+                  '${AppCubit.get(context).studentsData.length}',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -72,14 +73,14 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(studentsData[index]['name'],
+                    Text(AppCubit.get(context).studentsData[index]['name'],
                       style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w400
                     ),),
                     SizedBox(height: 8,),
                     Text(
-                      studentsData[index]['grad'],
+                      AppCubit.get(context).studentsData[index]['grad'],
                       style: TextStyle(
                           color: Colors.grey,
                         fontSize: 17,
@@ -113,7 +114,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
               Text(
-                  studentsData[index]['email'],
+                  AppCubit.get(context).studentsData[index]['email'],
                   style: TextStyle(
                 fontSize: 27,
                 fontWeight: FontWeight.w400,))
@@ -133,7 +134,7 @@ class _BusdriverStudentInfoState extends State<BusdriverStudentInfo> {
             child: Column(
               children: [
                 Text(
-                    studentsData[index]['phone'],
+                    AppCubit.get(context).studentsData[index]['phone'],
                     style: TextStyle(
                   fontSize: 27,
                   fontWeight: FontWeight.w400,))

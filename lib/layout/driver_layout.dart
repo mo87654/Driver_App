@@ -15,7 +15,7 @@ import '../modules/students-list screen/BusDriver_third_StudensList.dart';
 import '../shared/components/SignoutMessage.dart';
 import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
-import '../shared/components/local db methods.dart';
+import '../shared/components/driverMethods.dart';
 import '../shared/cubit/cubit.dart';
 
 class DriverLayout extends StatefulWidget {
@@ -29,15 +29,13 @@ class _DriverLayoutState extends State<DriverLayout> {
   @override
   void initState(){
     super.initState();
-    createDB();
-    getbusID().then((value) {
+    getbusNum().then((value) {
       getAddresses();
     });
-    getJson(); //her lies json get <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    //getJson(); //her lies json get <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   }
 
-  double? height;
-  double? width;
+
   var currentIndex = 3;
   List<Widget> driverScreens =[
     BusDriverHome(),
@@ -78,8 +76,6 @@ class _DriverLayoutState extends State<DriverLayout> {
       Text(' '),
       driverLeading(
           onpressedfun: (){
-            print(macFromESP);
-            notification();
           }
       ),
       driverLeading(
@@ -96,7 +92,7 @@ class _DriverLayoutState extends State<DriverLayout> {
       ),
     ];
     return BlocProvider(
-      create: (BuildContext context)=>AppCubit(),
+      create: (BuildContext context)=>AppCubit()..createDB(),
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context, state){},
           builder: (context, state) {
@@ -313,214 +309,4 @@ class _DriverLayoutState extends State<DriverLayout> {
     );
   }
 
-  Future getbusID() async {
-    var user = FirebaseAuth.
-    instance.currentUser;
-    await FirebaseFirestore.
-    instance.
-    collection('Drivers').
-    doc(user?.uid).
-    get().then((value){
-      busid = value.data()!['Bus id'];
-      //getAddresses();
-    }).catchError((Error){
-      print(Error);
-    });
-  }
-  void getAddresses () async {
-    addresses.clear();
-    await FirebaseFirestore.
-    instance.
-    collection('Students').
-    where('Bus id',isEqualTo: busid).
-    get().then((value){
-      value.docs.forEach((element) {
-        setState(() {
-          addresses.add(element.data()['address']);
-          MACaddress.add(element.data()['MAC-address']);
-        });
-      });
-    }).catchError((error){
-      print(error);
-    });
-  }
-  Future notification() async {
-    List existingMAC=[];
-    for(var i = 0;i<macFromESP.length;i++)
-      {
-        for(var j=0;j<MACaddress.length;j++)
-          {
-            Completer<void> completer = Completer<void>();
-            if(macFromESP[i]['MAC']==MACaddress[j])
-              {
-                await getStudentData(MACaddress[j]).then((value) async {
-                  if(studentsData.isNotEmpty)
-                  {
-                    for(var k=0;k<studentsData.length;k++)
-                    {
-                      existingMAC.add(studentsData[k]['mac']);
-                    }
-                    if(existingMAC.contains(MACaddress[j]))
-                    {
-                     // print('student exist');
-                    }else
-                    {
-                      pop_upMessage(completer);
-                      await completer.future;
-                      // print('not exist show pop up');
-                    }
-                  }else
-                  {
-                    pop_upMessage(completer);
-                    await completer.future;
-                    print('first show pop up');
-                  }
-                });
-              }
-          }
-      }
-  }
-  Future pop_upMessage(completer){
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context){
-          return WillPopScope(
-            onWillPop: () => Future.value(false),
-            child: AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: height! * .08,
-                    width: width! * .87,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Status',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                           studentPopUpInfo[0]['Bus id'],
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: height! * .29,
-                    width: width! * .53,
-                    child: Image(
-                      image: AssetImage('assets/images/student.png'),
-                      fit:BoxFit.cover ,
-                    ),
-
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    height: height! * .17,
-                    width: width! * .87,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            studentPopUpInfo[0]['name'],
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-
-                        Expanded(
-                          child: Text(
-                            studentPopUpInfo[0]['grad'],
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: height! * .17 * .08,
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              MaterialButton(
-                                onPressed:(){
-                                  insertdatabase(
-                                    name: studentPopUpInfo[0]['name'],
-                                    email: studentPopUpInfo[0]['email'],
-                                    phone: studentPopUpInfo[0]['tele-num'],
-                                    grad: studentPopUpInfo[0]['grad'],
-                                    mac: studentPopUpInfo[0]['MAC-address'],
-                                  );
-                                  Navigator.pop(context);
-                                  completer.complete();
-                                },
-                                child: Text(
-                                  'APPROVE',
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              MaterialButton(
-                                onPressed:(){
-                                  completer.complete();
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'DENY',
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        }
-    );
-  }
-  Future getStudentData(String MAC) async {
-    await FirebaseFirestore.
-    instance.
-    collection('Students').
-    where('MAC-address',isEqualTo: MAC).
-    get().then((value){
-      studentPopUpInfo.clear();
-      value.docs.forEach((element) {
-        setState(() {
-          studentPopUpInfo.add(element.data());
-        });
-      });
-    });
-  }
 }
