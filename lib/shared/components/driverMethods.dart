@@ -28,6 +28,7 @@ Future getbusNum() async {
     print(Error);
   });
 }
+
 void getAddresses () async {
   addresses.clear();
   await FirebaseFirestore.
@@ -43,43 +44,50 @@ void getAddresses () async {
     print(error);
   });
 }
+
 Future notification(context) async {
-  List existingMAC=[];
-  for(var i = 0;i<macFromESP.length;i++)
-  {
-    for(var j=0;j<MACaddress.length;j++)
-    {
-      Completer<void> completer = Completer<void>();
-      if(macFromESP[i]['MAC']==MACaddress[j])
-      {
-        await getStudentData(MACaddress[j]).then((value) async {
-          if(AppCubit.get(context).studentsData.isNotEmpty)
-          {
-            for(var k=0;k<AppCubit.get(context).studentsData.length;k++)
-            {
-              existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
-            }
-            if(existingMAC.contains(MACaddress[j]))
-            {
-              // print('student exist');
-            }else
-            {
-              pop_upMessage(completer, context);
-              await completer.future;
-              // print('not exist show pop up');
-            }
-          }else
-          {
-            pop_upMessage(completer, context);
-            await completer.future;
-            //print('first show pop up');
-          }
-        });
-      }
-    }
-  }
+ var i = 0;
+ while(i < 1){
+   List existingMAC=[];
+   existingMAC.clear();
+   for(var k=0;k<AppCubit.get(context).studentsData.length;k++)
+   {
+     existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
+   }
+   for(var i = 0;i<macFromESP.length;i++)
+   {
+     for(var j=0;j<MACaddress.length;j++)
+     {
+       Completer<void> completer = Completer<void>();
+       if(macFromESP[i]['MAC']==MACaddress[j])
+       {
+         await getStudentData(MACaddress[j]).then((value) async {
+           if(AppCubit.get(context).studentsData.isNotEmpty)
+           {
+             if(existingMAC.contains(MACaddress[j]))
+             {
+               // print('student exist');
+             }else
+             {
+               popUpMessage(completer, context, 'Boarding The Bus', true);
+               await completer.future;
+               // print('not exist show pop up');
+             }
+           }else
+           {
+             popUpMessage(completer, context, 'Boarding The Bus', true);
+             await completer.future;
+             //print('first show pop up');
+           }
+         });
+       }
+     }
+   }
+   i++;
+ }
 }
-Future pop_upMessage(completer, context1){
+
+Future popUpMessage(completer, context1, status, bool state){
   return showDialog(
       barrierDismissible: false,
       context: context1,
@@ -98,7 +106,7 @@ Future pop_upMessage(completer, context1){
                     children: [
                       Expanded(
                         child: Text(
-                          'Status',
+                          status,
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -159,13 +167,17 @@ Future pop_upMessage(completer, context1){
                           children: [
                             MaterialButton(
                               onPressed:(){
-                                AppCubit.get(context1).insertdatabase(
-                                  name: studentPopUpInfo[0]['name'],
-                                  email: studentPopUpInfo[0]['email'],
-                                  phone: studentPopUpInfo[0]['tele-num'],
-                                  grad: studentPopUpInfo[0]['grad'],
-                                  mac: studentPopUpInfo[0]['MAC-address'],
-                                );
+                                if (state==true)
+                                  {
+                                    AppCubit.get(context1).insertdatabase(
+                                      name: studentPopUpInfo[0]['name'],
+                                      email: studentPopUpInfo[0]['email'],
+                                      phone: studentPopUpInfo[0]['tele-num'],
+                                      grad: studentPopUpInfo[0]['grad'],
+                                      mac: studentPopUpInfo[0]['MAC-address'],
+                                    );
+                                  }else
+                                    {}
                                 Navigator.pop(context);
                                 completer.complete();
                               },
@@ -208,6 +220,7 @@ Future pop_upMessage(completer, context1){
       }
   );
 }
+
 Future getStudentData(String MAC) async {
   await FirebaseFirestore.
   instance.
@@ -221,9 +234,38 @@ Future getStudentData(String MAC) async {
   });
 }
 
+leavingNotification(context) async {
+  List espMac = [];
+  //espMac.clear();
+  for(var j=0;j<macFromESP.length;j++ )
+  {
+    espMac.add(macFromESP[j]['MAC']);
+  }
+  for(var i=0;i<allStudents.length;i++)
+    {
+      Completer<void> completer = Completer<void>();
+      if(espMac.contains(allStudents[i]['MAC']))
+        {
+          print('student still ridding the bus');
+        }else
+          {
+            getStudentData(allStudents[i]['MAC']).then((value) async {
+              popUpMessage(completer, context, 'Leaving The Bus', false);
+              await completer.future;
+              print('student leave the bus');
+            });
+          }
+    }
+  print(espMac);
+}
 
 //==========json file function============
 List<dynamic> macFromESP=[
+  {'MAC': 'c8:8f:66:c3:1f:36'},
+  {'MAC': '86:36:46:c8:86:f0'},
+  {'MAC': '79:fc:d1:36:08:7d'},
+];
+List<dynamic> allStudents=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
   {'MAC': '86:36:46:c8:86:f0'},
   {'MAC': '79:fc:d1:36:08:7d'},

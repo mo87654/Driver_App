@@ -99,7 +99,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                 ),
                 IconButton(
                     onPressed: (){
-                      notification(context);
+                      leavingNotification(context);
                     },
                     icon: Icon(
                         Icons.add
