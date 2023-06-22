@@ -1,11 +1,8 @@
 
-import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_app/shared/cubit/cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../shared/components/components.dart';
 import '../../shared/components/driverMethods.dart';
 import '../../shared/cubit/states.dart';
 import '../login screen/login.dart';

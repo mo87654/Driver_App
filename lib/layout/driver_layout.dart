@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_app/shared/cubit/states.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location/location.dart';
 import '../modules/addresses screen/driverAddressesPage.dart';
 import '../modules/home screen/BusDriver_firstScreen.dart';
 import '../modules/my account screen/My_account.dart';
@@ -23,14 +25,61 @@ class DriverLayout extends StatefulWidget {
   @override
   State<DriverLayout> createState() => _DriverLayoutState();
 }
-
 class _DriverLayoutState extends State<DriverLayout> {
+
+
+
+  Future<void> checkLocationService ()async{
+
+    Location location = new Location();
+
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    // LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        SystemNavigator.pop();
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        SystemNavigator.pop();
+
+      }
+    }
+
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      String userId = FirebaseAuth.instance.currentUser!.uid.toString();
+      DocumentReference ref = FirebaseFirestore.instance
+          .collection("Drivers").doc(userId);
+      ref.update({
+        'latitude': currentLocation.latitude,
+        'longitude': currentLocation.longitude,
+
+      }).then((value) {
+        print('Location updated successfully');
+      }).catchError((error) {
+        print('Failed to update location: $error');
+      });
+    });
+
+
+  }
+
 
   @override
   void initState(){
     super.initState();
     getbusNum().then((value) {
       getAddresses();
+      checkLocationService();
     });
     //getJson(); //her lies json get <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   }
