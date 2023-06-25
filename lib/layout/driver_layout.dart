@@ -207,7 +207,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.perm_contact_cal_outlined),
-                        title: const Text(' Profile Details ',
+                        title: const Text(' Edit Profile ',
                           style: TextStyle(
                               fontSize: 17
                           ),
