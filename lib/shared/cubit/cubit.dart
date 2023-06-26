@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:driver_app/shared/cubit/states.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,6 +11,8 @@ class AppCubit extends Cubit<AppStates>
 
   List<Map> studentsData = [];
   Database? database;
+  var widgetIndex = 0;
+  Widget? selectedText;
 
   Future createDB()async{
     await openDatabase(
@@ -64,4 +67,42 @@ class AppCubit extends Cubit<AppStates>
     studentsData = [];
   }
 
+  homeButton(){
+    switch (widgetIndex) {
+      case 0:
+        selectedText = Text(
+          'Start Bus Commute',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.italic
+            )
+        );
+        break;
+      case 1:
+        selectedText = Text(
+            'End Bus Commute',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.italic
+            )
+        );
+        break;
+      case 2:
+        selectedText = Text(
+            'Go',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.italic
+            )
+        );
+    }
+  }
+
+   updateHomeBUttonValue(value){
+    widgetIndex=value;
+    emit(HomeButtonTextState());
+  }
 }

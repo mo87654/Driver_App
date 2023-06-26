@@ -64,9 +64,7 @@ class _DriverLayoutState extends State<DriverLayout> {
         'longitude': currentLocation.longitude,
 
       }).then((value) {
-        print('Location updated successfully');
       }).catchError((error) {
-        print('Failed to update location: $error');
       });
     });
 
