@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ Future getbusNum() async {
     print(Error);
   });
 }
+
 void getAddresses () async {
   addresses.clear();
   await FirebaseFirestore.
@@ -42,43 +45,52 @@ void getAddresses () async {
     print(error);
   });
 }
-Future notification(context) async {
-  List existingMAC=[];
-  for(var i = 0;i<macFromESP.length;i++)
-  {
-    for(var j=0;j<MACaddress.length;j++)
-    {
-      Completer<void> completer = Completer<void>();
-      if(macFromESP[i]['MAC']==MACaddress[j])
-      {
-        await getStudentData(MACaddress[j]).then((value) async {
-          if(AppCubit.get(context).studentsData.isNotEmpty)
-          {
-            for(var k=0;k<AppCubit.get(context).studentsData.length;k++)
-            {
-              existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
-            }
-            if(existingMAC.contains(MACaddress[j]))
-            {
-              // print('student exist');
-            }else
-            {
-              pop_upMessage(completer, context);
-              await completer.future;
-              // print('not exist show pop up');
-            }
-          }else
-          {
-            pop_upMessage(completer, context);
-            await completer.future;
-            //print('first show pop up');
-          }
-        });
-      }
-    }
-  }
-}
-Future pop_upMessage(completer, context1){
+
+ notification(context, timer) async {
+   timer?.cancel();
+   List existingMAC=[];
+   existingMAC.clear();
+   for(var k=0;k<AppCubit.get(context).studentsData.length;k++)
+   {
+     existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
+   }
+   for(var i = 0;i<macFromESP.length;i++)
+   {
+     for(var j=0;j<MACaddress.length;j++)
+     {
+       Completer<void> completer = Completer<void>();
+       if(macFromESP[i]['MAC']==MACaddress[j])
+       {
+         await getStudentData(MACaddress[j]).then((value) async {
+           if(AppCubit.get(context).studentsData.isNotEmpty)
+           {
+             if(existingMAC.contains(MACaddress[j]))
+             {
+               // print('student exist');
+             }else
+             {
+               popUpMessage(completer, context, 'Boarding The Bus', true);
+               await completer.future;
+               await Future.delayed(Duration(seconds: 1));
+               // print('not exist show pop up');
+             }
+           }else
+           {
+             popUpMessage(completer, context, 'Boarding The Bus', true);
+             await completer.future;
+             await Future.delayed(Duration(seconds: 1));
+             // print('first show pop up');
+           }
+         });
+       }
+     }
+   }
+   startTimer(timer, notification(context, timer));
+ }
+
+
+Future popUpMessage(completer, context1, status, bool state){
+
   return showDialog(
       barrierDismissible: false,
       context: context1,
@@ -97,21 +109,23 @@ Future pop_upMessage(completer, context1){
                     children: [
                       Expanded(
                         child: Text(
-                          'Status',
+                          status,
                           style: TextStyle(
                             fontSize: 18,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Text(
-                          ("Bus number: ${studentPopUpInfo[0]['Bus_number']}"),
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
+                      studentPopUpInfo.isEmpty?
+                          CircularProgressIndicator()
+                          :Expanded(
+                            child: Text(
+                            ("Bus number: ${studentPopUpInfo[0]['Bus_number']}"),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
                         ),
-                      )
+                          ),
                     ],
                   ),
                 ),
@@ -133,16 +147,21 @@ Future pop_upMessage(completer, context1){
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
+                      studentPopUpInfo.isEmpty?
+                         CircularProgressIndicator()
+                            :Expanded(
+                              child: Text(
                           studentPopUpInfo[0]['name'],
                           style: TextStyle(
-                            fontSize: 20,
+                              fontSize: 20,
                           ),
                         ),
-                      ),
+                            ),
+                      
 
-                      Expanded(
+                      studentPopUpInfo.isEmpty?
+                      CircularProgressIndicator()
+                          :Expanded(
                         child: Text(
                           studentPopUpInfo[0]['grad'],
                           style: TextStyle(
@@ -157,16 +176,19 @@ Future pop_upMessage(completer, context1){
                         child: Row(
                           children: [
                             MaterialButton(
-                              onPressed:(){
-                                AppCubit.get(context1).insertdatabase(
-                                  name: studentPopUpInfo[0]['name'],
-                                  email: studentPopUpInfo[0]['email'],
-                                  phone: studentPopUpInfo[0]['tele-num'],
-                                  grad: studentPopUpInfo[0]['grad'],
-                                  mac: studentPopUpInfo[0]['MAC-address'],
-                                );
-                                Navigator.pop(context);
+                              onPressed:() async {
+                                if (state==true)
+                                  {
+                                    await AppCubit.get(context1).insertdatabase(
+                                      name : studentPopUpInfo[0]['name'],
+                                      email: studentPopUpInfo[0]['email'],
+                                      phone: studentPopUpInfo[0]['tele-num'],
+                                      grad : studentPopUpInfo[0]['grad'],
+                                      mac  : studentPopUpInfo[0]['MAC-address'],
+                                    );
+                                  }
                                 completer.complete();
+                                Navigator.pop(context);
                               },
                               child: Text(
                                 'APPROVE',
@@ -207,31 +229,70 @@ Future pop_upMessage(completer, context1){
       }
   );
 }
+
 Future getStudentData(String MAC) async {
+  studentPopUpInfo.clear();
   await FirebaseFirestore.
   instance.
   collection('Students').
   where('MAC-address',isEqualTo: MAC).
   get().then((value){
-    studentPopUpInfo.clear();
+   // studentPopUpInfo.clear();
     value.docs.forEach((element) {
         studentPopUpInfo.add(element.data());
     });
   });
 }
 
+leavingNotification(context, timer) async {
+  timer?.cancel();
+  List espMac = [];
+  //espMac.clear();
+  for(var j=0;j<macFromESP.length;j++ )
+  {
+    espMac.add(macFromESP[j]['MAC']);
+  }
+  for(var i=0;i<allStudents.length;i++)
+    {
+      Completer<void> completer2 = Completer<void>();
+      if(espMac.contains(allStudents[i]['MAC']))
+        {
+        }else
+          {
+            getStudentData(allStudents[i]['MAC']).then((value) async {
+              print(studentPopUpInfo);
+              popUpMessage(completer2, context, 'Leaving The Bus', false);
+            });
+            await completer2.future;
+            await Future.delayed(Duration(seconds: 1));
+          }
+    }
+  // startTimer(timer, leavingNotification(context, timer));
+}
+
+startTimer(timer, function){
+  timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    function;
+  });
+}
 
 //==========json file function============
 List<dynamic> macFromESP=[
+  {'MAC': 'c8:8f:66:c3:1f:36'},
+  {'MAC': '86:36:46:c8:86:f0'},
+];
+List<dynamic> allStudents=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
   {'MAC': '86:36:46:c8:86:f0'},
   {'MAC': '79:fc:d1:36:08:7d'},
   {'MAC': 'd9:e3:80:22:9a:66'}
 ];
 var json;
-/*Future getJson ()async{
+Future getJson ()async{
   var url=Uri.parse("https://script.googleusercontent.com/macros/echo?user_content_key=-txHhINBYG_HjSvyno1jrTZeb1ilWM4YBuGLlB17c6QnK4wLQAwAYc9pHY5EeHisDy7g8psalO0zZUUhVh7hC-OtQxlk86Jem5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnHqnKnpp1zTdfFN17X2Kveefnko7KPRe5NqUQQgRuFkDHB_7otA1G7S3cJotgUotvvcCCXpHvgrsZrYxGGIXmoCq0UjEOUCR1Nz9Jw9Md8uu&lib=MuaA7e0PjPiH0jPT4P62uuWSLqXWK-X04");
   json = await http.read(url).then((value){
     macFromESP = jsonDecode(value);
   });
-}*/
+}
+
+

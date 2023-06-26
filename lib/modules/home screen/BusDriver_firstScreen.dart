@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:driver_app/shared/cubit/cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
   void initState() {
     super.initState();
     //getIDs();
+    AppCubit.get(context).homeButton();
     instance.authStateChanges().listen((User? user) {
       if (user == null) {
         Navigator.pushReplacement(
@@ -28,6 +31,8 @@ class _BusDriverHomeState extends State<BusDriverHome> {
       }
     });
   }
+
+  Timer? timer;
   /*List studentData = [];
   List ids = [];
   //List students =[];
@@ -58,7 +63,11 @@ class _BusDriverHomeState extends State<BusDriverHome> {
     studentData.add(dataRef.data());
   }*/
   Widget build(BuildContext context) {
+    AppCubit cubit = BlocProvider.of(context);
     return BlocConsumer<AppCubit, AppStates>(
+        listener: (context, state){
+          cubit.homeButton();
+        },
         builder: (context, state){
           return Container(
             color: Color(0xffEBEBEB),
@@ -89,161 +98,194 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   width: double.infinity,
                   height: 1.0,
                   color: Colors.grey,
+                ),
+                Expanded(
+                  child: SizedBox(),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  margin: EdgeInsetsDirectional.only(
+                    start: 40,
+                    end: 40,
+                    bottom: 60,
+                  ),
+                  child: MaterialButton(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                      onPressed: (){
+                        if(cubit.widgetIndex == 1)
+                          {
+                            cubit.updateHomeBUttonValue(0);
+                            timer?.cancel();
+                          }else if(cubit.widgetIndex == 2)
+                            {
+                              timer?.cancel();
+                              setState(() {
 
-                ),
-                SizedBox(
-                  height: 300,
-                ),
-                IconButton(
-                    onPressed: (){
-                      notification(context);
-                    },
-                    icon: Icon(
-                        Icons.add
-                    )
+                              });
+                              cubit.updateHomeBUttonValue(1);
+                              /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
+                                leavingNotification(context);
+                              });*/
+                              startTimer(timer, leavingNotification(context, timer));
+                            }else{
+                          destination(cubit, context);
+                        }
+                      },
+                      child: cubit.selectedText
+                  ),
                 )
-                /*FloatingActionButton(
-              backgroundColor: Color(0xff4d6aaa),
-                onPressed: ()async{
-                  await getData();
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context){
-                        return WillPopScope(
-                          onWillPop: () => Future.value(false),
-                          child: AlertDialog(
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  height: height * .08,
-                                  width: width * .87,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Status',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          studentData[0]['Bus id'],
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: height * .29,
-                                  width: width * .53,
-                                  child: Image(
-                                    image: AssetImage('assets/images/student.png'),
-                                    fit:BoxFit.cover ,
-                                  ),
-
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Container(
-                                  height: height * .17,
-                                  width: width * .87,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          studentData[0]['name'],
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-
-                                      Expanded(
-                                        child: Text(
-                                          studentData[0]['grad'],
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: height * .17 * .08,
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            MaterialButton(
-                                              onPressed:(){
-                                                AppCubit.get(context).insertdatabase(
-                                                    name: studentData[0]['name'],
-                                                    email: studentData[0]['email'],
-                                                    phone: studentData[0]['tele-num'],
-                                                    grad: studentData[0]['grad'],
-                                                    mac: studentData[0]['MAC-address'],
-                                                );
-                                                setState(() {});
-                                                  Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                'APPROVE',
-                                                style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 20,
-                                            ),
-                                            MaterialButton(
-                                              onPressed:(){
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                'DENY',
-                                                style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                  );
-                }),*/
-                /*IconButton(onPressed: ()async{
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login(),), (route) => false);
-
-            },
-                icon: Icon(Icons.logout))*/
               ],),
 
           );
-        },
-        listener: (context, state){}
+        }
+    );
+  }
+
+  destination(cubit, context1){
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context){
+          return WillPopScope(
+            onWillPop: () => Future.value(false),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)
+              ),
+              iconPadding: EdgeInsetsDirectional.only(
+                top: 10,
+                end: 10,
+              ),
+              icon: Row(
+                children: [
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    alignment: AlignmentDirectional.topEnd,
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              ),
+              title: Text(
+                'Where are you heading?',
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'To :',
+                    style: TextStyle(
+                      fontSize: 20
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      MaterialButton(
+                        height: 50,
+                        color: Colors.grey[300],
+                        padding: EdgeInsetsDirectional.only(
+                          start: .0001,
+                          end: 25,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                          onPressed: (){
+                            /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
+                              notification(context);
+                            });*/
+                            startTimer(timer, notification(context1, timer));
+                            cubit.updateHomeBUttonValue(2);
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              CircleAvatar(
+                                radius: 26,
+                                child: Image(
+                                  image: AssetImage('assets/images/homeicon.png'),
+                                  fit: BoxFit.cover,
+                                )
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                'Home',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                ),
+                              )
+                            ],
+                          ),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      MaterialButton(
+                        height: 50,
+                        color: Colors.grey[300],
+                        padding: EdgeInsetsDirectional.only(
+                          start: .0001,
+                          end: 20,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        onPressed: (){
+                          /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
+                            notification(context);
+                          });*/
+                          startTimer(timer, notification(context1, timer));
+                          cubit.updateHomeBUttonValue(1);
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            CircleAvatar(
+                                radius: 26,
+                                child: Image(
+                                  image: AssetImage('assets/images/schoolicon.png'),
+
+                                )
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'School',
+                              style: TextStyle(
+                                fontSize: 22,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        }
     );
   }
 }
