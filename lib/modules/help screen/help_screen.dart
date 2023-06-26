@@ -1,9 +1,10 @@
 
-import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+//import '../../shared/component/buttons.dart';
+import '../../shared/component/colors.dart';
 import '../../shared/components/buttons.dart';
+
 
 
 class HelpPage extends StatefulWidget {
@@ -25,13 +26,14 @@ class _HelpPageState extends State<HelpPage> {
 
 
       appBar:AppBar(
-        leading:  IconButton(icon:  Icon(Icons.arrow_back),
+        leading:  IconButton(icon:
+        Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text ('Help!'),
-        backgroundColor: appColor(),
+       // backgroundColor: app_Color(),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -100,6 +102,7 @@ class _HelpPageState extends State<HelpPage> {
               ),
               SizedBox(height: 220.0),
               appButton(
+
                 isLoading: isLoading,
                 text: 'Save',
                 function: ()async{
@@ -112,53 +115,21 @@ class _HelpPageState extends State<HelpPage> {
                       'ProblemDescription' :_controllerProblem.text
                     };
                     FirebaseFirestore.instance.collection('problems').add(dataToSave);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(backgroundColor: Colors.black38,
+                          padding: EdgeInsets.symmetric(vertical: 18),
+                          content: Text("  your problem has been sent succesfully ",style: TextStyle(fontSize: 20),)),);
+
 
                     setState(() {
                       isLoading = false;
                     });
 
-                    Navigator.pop(context);
+                    //Navigator.pop(context);
                   }
                 },
               ),
-              // Container(
-              //   height: 45,
-              //   width: double.infinity,
-              //   padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-              //   child: MaterialButton(
-              //     onPressed: (){
-              //       Map<String,String> dataToSave={
-              //         'Email':_controllerEmail.text ,
-              //         'ProblemDescription' :_controllerProblem.text
-              //
-              //       };
-              //
-              //       FirebaseFirestore.instance.collection('problems').add(dataToSave);
-              //       //FirebaseAuth.instance.confirmPasswordReset(code: code, newPassword: newPassword)u;
-              //
-              //       if (formkey.currentState!.validate())
-              //       {
-              //
-              //       }
-              //     },
-              //
-              //     child:Text(
-              //       'Save',
-              //       style: TextStyle(
-              //         color: Colors.white,
-              //         fontSize: 17,
-              //
-              //       ),
-              //
-              //     ),
-              //     color: Color(0xff515281),
-              //     shape:RoundedRectangleBorder (
-              //       borderRadius: BorderRadius.circular (10.0), ),
-              //
-              //
-              //   ),
-              //
-              // ),
+
               SizedBox(
                 height: 25,
               ),
@@ -173,11 +144,8 @@ class _HelpPageState extends State<HelpPage> {
             ],
           ),
         ),
-
       ),
-
 
     );
   }
 }
-
