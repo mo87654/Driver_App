@@ -99,6 +99,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   height: 1.0,
                   color: Colors.grey,
                 ),
+                // IconButton(onPressed: (){confirmationMessage(task: 'test message work');}, icon: Icon(Icons.run_circle)),
                 Expanded(
                   child: SizedBox(),
                 ),
@@ -115,25 +116,48 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                      onPressed: (){
+                      onPressed: () async {
                         if(cubit.widgetIndex == 1)
                           {
-                            cubit.updateHomeBUttonValue(0);
-                            timer?.cancel();
+                            confirmationMessage(
+                                task: 'Are you sure you want to finish the bus Commute to school?',
+                                cubit: cubit,
+                                context1: context,
+                                position: 1
+                            );
+                          }else if(cubit.widgetIndex == 3)
+                        {
+                          confirmationMessage(
+                              task: 'Are you sure you want to finish the bus Commute home?',
+                              cubit: cubit,
+                              context1: context,
+                              position: 1
+                          );
+                        }else if(cubit.widgetIndex == 2)
+                        {
+                          confirmationMessage(
+                              task: 'Are you sure that all students have boarded the bus?',
+                              cubit: cubit,
+                              context1: context,
+                              position: 1
+                          );
+                        } else
+                            {
+                              destination(cubit, context);
+                            }
+                        /* if(cubit.widgetIndex == 1 || cubit.widgetIndex == 3)
+                          {
+                            cubit.updateDataBase(newIndex: 0, currentIndex: cubit.widgetIndex).then((value) async {
+                              await Future.delayed(Duration(milliseconds: 500 ));
+                              cubit.deleteDataBase();
+                            });
                           }else if(cubit.widgetIndex == 2)
                             {
-                              timer?.cancel();
-                              setState(() {
-
+                              cubit.updateDataBase(newIndex: 3, currentIndex: 2).then((value) async {
+                                await Future.delayed(Duration(milliseconds: 500 ));
+                                startTimer(leavingNotification(context));
                               });
-                              cubit.updateHomeBUttonValue(1);
-                              /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
-                                leavingNotification(context);
-                              });*/
-                              startTimer(timer, leavingNotification(context, timer));
-                            }else{
-                          destination(cubit, context);
-                        }
+                            }*/
                       },
                       child: cubit.selectedText
                   ),
@@ -206,13 +230,12 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                          onPressed: (){
-                            /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
-                              notification(context);
-                            });*/
-                            startTimer(timer, notification(context1, timer));
-                            cubit.updateHomeBUttonValue(2);
+                          onPressed: () async {
                             Navigator.pop(context);
+                            cubit.updateDataBase(newIndex: 2, currentIndex: 0).then((value) async {
+                              await Future.delayed(Duration(milliseconds: 500 ));
+                              startTimer(notification(context1));
+                            });
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -249,13 +272,12 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        onPressed: (){
-                          /*timer = Timer.periodic(Duration(seconds: 1), (timer) {
-                            notification(context);
-                          });*/
-                          startTimer(timer, notification(context1, timer));
-                          cubit.updateHomeBUttonValue(1);
+                        onPressed: () async {
                           Navigator.pop(context);
+                          cubit.updateDataBase(newIndex: 1, currentIndex: 0).then((value) async {
+                            await Future.delayed(Duration(milliseconds: 500 ));
+                            startTimer(notification(context1));
+                          });
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -288,5 +310,6 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         }
     );
   }
+  
 }
 

@@ -12,4 +12,3 @@ class DeleteDataBaseState extends AppStates{}
 
 class RecreateTableState extends AppStates{}
 
-class HomeButtonTextState extends AppStates{}

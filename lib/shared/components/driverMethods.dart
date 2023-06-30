@@ -4,13 +4,15 @@ import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:sqflite/sqflite.dart';
 import '../cubit/cubit.dart';
+import 'package:path/path.dart';
+
 
 double? height;
 double? width;
 var busNum;
+Timer? timer;
 List addresses=[];
 List MACaddress= [];
 List studentPopUpInfo = [];
@@ -46,50 +48,46 @@ void getAddresses () async {
   });
 }
 
- notification(context, timer) async {
-   timer?.cancel();
-   List existingMAC=[];
-   existingMAC.clear();
-   for(var k=0;k<AppCubit.get(context).studentsData.length;k++)
+ notification(context) async {
+   //await Future.delayed(Duration(milliseconds: 1000 ));
+   if(AppCubit.get(context).widgetIndex == 1 || AppCubit.get(context).widgetIndex == 2)
    {
-     existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
-   }
-   for(var i = 0;i<macFromESP.length;i++)
-   {
-     for(var j=0;j<MACaddress.length;j++)
-     {
-       Completer<void> completer = Completer<void>();
-       if(macFromESP[i]['MAC']==MACaddress[j])
-       {
-         await getStudentData(MACaddress[j]).then((value) async {
-           if(AppCubit.get(context).studentsData.isNotEmpty)
-           {
-             if(existingMAC.contains(MACaddress[j]))
-             {
-               // print('student exist');
-             }else
-             {
-               popUpMessage(completer, context, 'Boarding The Bus', true);
-               await completer.future;
-               await Future.delayed(Duration(seconds: 1));
-               // print('not exist show pop up');
-             }
-           }else
-           {
-             popUpMessage(completer, context, 'Boarding The Bus', true);
-             await completer.future;
-             await Future.delayed(Duration(seconds: 1));
-             // print('first show pop up');
-           }
-         });
-       }
-     }
-   }
-   startTimer(timer, notification(context, timer));
- }
+    timer?.cancel();
+    List existingMAC = [];
+    existingMAC.clear();
+    for (var k = 0; k < AppCubit.get(context).studentsData.length; k++) {
+      existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
+    }
+    for (var i = 0; i < macFromESP.length; i++) {
+      for (var j = 0; j < MACaddress.length; j++) {
+        Completer<void> completer = Completer<void>();
+        if (macFromESP[i]['MAC'] == MACaddress[j]) {
+          await getStudentData(MACaddress[j]).then((value) async {
+            if (AppCubit.get(context).studentsData.isNotEmpty) {
+              if (existingMAC.contains(MACaddress[j])) {
+                // print('student exist');
+              } else {
+                popUpMessage(completer, context, 'Boarding The Bus', true);
+                await completer.future;
+                await Future.delayed(Duration(seconds: 1));
+                // print('not exist show pop up');
+              }
+            } else {
+              popUpMessage(completer, context, 'Boarding The Bus', true);
+              await completer.future;
+              await Future.delayed(Duration(seconds: 1));
+              // print('first show pop up');
+            }
+          });
+        }
+      }
+    }
+    startTimer(notification(context));
+  }
+}
 
 
-Future popUpMessage(completer, context1, status, bool state){
+Future popUpMessage(completer, context1, status, bool state, [sdbIndex]){
 
   return showDialog(
       barrierDismissible: false,
@@ -115,17 +113,25 @@ Future popUpMessage(completer, context1, status, bool state){
                           ),
                         ),
                       ),
-                      studentPopUpInfo.isEmpty?
-                          CircularProgressIndicator()
-                          :Expanded(
-                            child: Text(
-                            ("Bus number: ${studentPopUpInfo[0]['Bus_number']}"),
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                        ),
+                      state == true?
+                      Expanded(
+                        child: Text(
+                          ("Bus number: ${studentPopUpInfo[0]['Bus_number']}"),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
+                        ),
+                      ) :
+                      Expanded(
+                            child: Text(
+                              ("Bus number: ${AppCubit.get(context1).studentsData[sdbIndex]['busNum']}"),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          )
                     ],
                   ),
                 ),
@@ -147,23 +153,35 @@ Future popUpMessage(completer, context1, status, bool state){
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      studentPopUpInfo.isEmpty?
-                         CircularProgressIndicator()
-                            :Expanded(
-                              child: Text(
+                      state == true?
+                      Expanded(
+                        child: Text(
                           studentPopUpInfo[0]['name'],
                           style: TextStyle(
-                              fontSize: 20,
+                            fontSize: 20,
                           ),
                         ),
+                      ) :
+                      Expanded(
+                              child: Text(
+                                AppCubit.get(context1).studentsData[sdbIndex]['name'],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
-                      
-
-                      studentPopUpInfo.isEmpty?
-                      CircularProgressIndicator()
-                          :Expanded(
+                      state == true?
+                      Expanded(
                         child: Text(
                           studentPopUpInfo[0]['grad'],
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ):
+                      Expanded(
+                        child: Text(
+                          AppCubit.get(context1).studentsData[sdbIndex]['grad'],
                           style: TextStyle(
                             fontSize: 15,
                           ),
@@ -179,14 +197,17 @@ Future popUpMessage(completer, context1, status, bool state){
                               onPressed:() async {
                                 if (state==true)
                                   {
-                                    await AppCubit.get(context1).insertdatabase(
-                                      name : studentPopUpInfo[0]['name'],
-                                      email: studentPopUpInfo[0]['email'],
-                                      phone: studentPopUpInfo[0]['tele-num'],
-                                      grad : studentPopUpInfo[0]['grad'],
-                                      mac  : studentPopUpInfo[0]['MAC-address'],
+                                    await AppCubit.get(context1).insertDataBase(
+                                      name  : studentPopUpInfo[0]['name'],
+                                      busNum: studentPopUpInfo[0]['Bus_number'],
+                                      phone : studentPopUpInfo[0]['tele-num'],
+                                      grad  : studentPopUpInfo[0]['grad'],
+                                      mac   : studentPopUpInfo[0]['MAC-address'],
                                     );
-                                  }
+                                  }else
+                                    {
+                                      AppCubit.get(context1).deleteRecord(AppCubit.get(context1).studentsData[sdbIndex]['id']);
+                                    }
                                 completer.complete();
                                 Navigator.pop(context);
                               },
@@ -230,6 +251,114 @@ Future popUpMessage(completer, context1, status, bool state){
   );
 }
 
+confirmationMessage({
+  required String task,
+  required cubit,
+  required context1,
+  required int position,
+  id,
+}){
+  return showDialog(
+      barrierDismissible: false,
+      context: context1,
+      builder: (context){
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            title: Text(
+              'Confirmation',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 28,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  task,
+                  style: TextStyle(
+                      fontSize: 23
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MaterialButton(
+                      height: 50,
+                      color: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        if(position == 1)
+                          {
+                            if(cubit.widgetIndex == 1 || cubit.widgetIndex == 3)
+                            {
+                              cubit.updateDataBase(newIndex: 0, currentIndex: cubit.widgetIndex).then((value) async {
+                                await Future.delayed(Duration(milliseconds: 500 ));
+                                cubit.deleteDataBase();
+                              });
+                            }else if(cubit.widgetIndex == 2)
+                            {
+                              cubit.updateDataBase(newIndex: 3, currentIndex: 2).then((value) async {
+                                await Future.delayed(Duration(milliseconds: 500 ));
+                                startTimer(leavingNotification(context1));
+                              });
+                            }
+                          }else
+                            {
+                              cubit.deleteRecord(id);
+                            }
+                      },
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.white
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 100,
+                    ),
+                    MaterialButton(
+                      height: 50,
+                      color: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.white
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }
+  );
+}
+
 Future getStudentData(String MAC) async {
   studentPopUpInfo.clear();
   await FirebaseFirestore.
@@ -244,42 +373,48 @@ Future getStudentData(String MAC) async {
   });
 }
 
-leavingNotification(context, timer) async {
-  timer?.cancel();
-  List espMac = [];
-  //espMac.clear();
-  for(var j=0;j<macFromESP.length;j++ )
+leavingNotification(context) async {
+  if(AppCubit.get(context).widgetIndex == 3)
   {
-    espMac.add(macFromESP[j]['MAC']);
-  }
-  for(var i=0;i<allStudents.length;i++)
-    {
-      Completer<void> completer2 = Completer<void>();
-      if(espMac.contains(allStudents[i]['MAC']))
-        {
-        }else
-          {
-            getStudentData(allStudents[i]['MAC']).then((value) async {
-              print(studentPopUpInfo);
-              popUpMessage(completer2, context, 'Leaving The Bus', false);
-            });
-            await completer2.future;
-            await Future.delayed(Duration(seconds: 1));
-          }
+    timer?.cancel();
+    List espMac = [];
+    for (var j = 0; j < macFromESP.length; j++) {
+      espMac.add(macFromESP[j]['MAC']);
     }
-  // startTimer(timer, leavingNotification(context, timer));
+    for (var i = 0; i < AppCubit.get(context).studentsData.length; i++) {
+      Completer<void> completer2 = Completer<void>();
+      if (espMac.contains(AppCubit.get(context).studentsData[i]['mac'])) {
+        //student still ridding the bus
+        await Future.delayed(Duration(seconds: 1));
+      } else {
+        popUpMessage(completer2, context, 'Leaving The Bus', false, i);
+        await completer2.future;
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
+    startTimer(leavingNotification(context));
+  }
 }
 
-startTimer(timer, function){
+startTimer(function){
   timer = Timer.periodic(Duration(seconds: 1), (timer) {
     function;
   });
+}
+
+//dangerous !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+deleteAllDataBase() async {
+  var databasesPath = await getDatabasesPath();
+  String path = join(databasesPath, 'local_database.db');
+  await deleteDatabase(path);
+  print('database has been deleted');
 }
 
 //==========json file function============
 List<dynamic> macFromESP=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
   {'MAC': '86:36:46:c8:86:f0'},
+
 ];
 List<dynamic> allStudents=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
