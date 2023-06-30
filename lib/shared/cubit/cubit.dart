@@ -11,7 +11,7 @@ class AppCubit extends Cubit<AppStates>
 
   List<Map> studentsData = [];
   Database? database;
-  var widgetIndex = 0;
+  int? widgetIndex;
   Widget? selectedText;
 
   Future createDB()async{
@@ -19,13 +19,16 @@ class AppCubit extends Cubit<AppStates>
         'local_database.db',
         version: 1,
         onCreate: (database,version)async{
-          await database.execute('CREATE TABLE students (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT, grad TEXT, mac TEXT)');
+          await database.execute('CREATE TABLE students (id INTEGER PRIMARY KEY, name TEXT, busNum TEXT, phone TEXT, grad TEXT, mac TEXT)');
+          await database.execute('CREATE TABLE variables (widgetIndex INTEGER)').then((value){
+            database.transaction((txn)async {
+              await txn.rawInsert(
+                  'INSERT INTO variables(widgetIndex)VALUES(0)');
+            });
+          });
         },
         onOpen: (database){
-          getdatabase(database).then((value) {
-            studentsData = value;
-            emit(GetDataBaseState());
-          });
+          getDataBase(database);
         }
     ).then((value){
       database = value;
@@ -33,38 +36,63 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
-  Future? insertdatabase({
+  insertDataBase({
     required String name,
-    required String email,
+    required String busNum,
     required String phone,
     required String grad,
     required String mac,
   }){
     database?.transaction((txn)async {
-      await txn.rawInsert('INSERT INTO students(name, email, phone, grad, mac)VALUES("$name", "$email", "$phone", "$grad", "$mac")')
+      await txn.rawInsert('INSERT INTO students(name, busNum, phone, grad, mac)VALUES("$name", "$busNum", "$phone", "$grad", "$mac")')
           .then((value) {
             emit(InsertDataBaseState());
-            getdatabase(database!).then((value) {
-              studentsData= value;
-              emit(GetDataBaseState());
-            });
+            getDataBase(database!);
       });
 
     });
   }
 
-  Future getdatabase(Database database)async{
-    return await database.rawQuery("SELECT * FROM students");
+   getDataBase(Database database)async{
+     await database.rawQuery("SELECT * FROM students").then((value){
+      studentsData = value;
+    });
+     await database.rawQuery("SELECT * FROM variables").then((value) {
+       widgetIndex = value[0]['widgetIndex'] as int?;
+       emit(GetDataBaseState());
+     });
   }
 
-  Future deletedatabase()async{
+  Future updateDataBase({
+    @required newIndex,
+    @required currentIndex,
+}) async {
+    await database?.rawUpdate(
+        'UPDATE variables SET widgetIndex = ? WHERE widgetIndex = ?',
+        ['$newIndex', '$currentIndex']
+    ).then((value) async {
+      await database?.rawQuery("SELECT * FROM variables").then((value) {
+        widgetIndex = value[0]['widgetIndex'] as int?;
+        emit(GetDataBaseState());
+      });
+    });
+    return null;
+  }
+
+  deleteDataBase()async{
     await database?.execute('DROP TABLE IF EXISTS students').then((value){
       emit(DeleteDataBaseState());
     });
-    await database?.execute('CREATE TABLE students (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT, grad TEXT, mac TEXT)').then((value){
+    await database?.execute('CREATE TABLE students (id INTEGER PRIMARY KEY, name TEXT, busNum TEXT, phone TEXT, grad TEXT, mac TEXT)').then((value){
       emit(RecreateTableState());
     });
     studentsData = [];
+  }
+
+  deleteRecord(id) async {
+    await database?.rawDelete('DELETE FROM students WHERE id = ?', [id]).then((value){
+      getDataBase(database!);
+    });
   }
 
   homeButton(){
@@ -98,11 +126,17 @@ class AppCubit extends Cubit<AppStates>
                 fontStyle: FontStyle.italic
             )
         );
+        break;
+      case 3:
+        selectedText = Text(
+            'End Bus Commute',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.italic
+            )
+        );
     }
   }
 
-   updateHomeBUttonValue(value){
-    widgetIndex=value;
-    emit(HomeButtonTextState());
-  }
 }
