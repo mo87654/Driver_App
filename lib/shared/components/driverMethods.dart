@@ -204,9 +204,12 @@ Future popUpMessage(completer, context1, status, bool state, [sdbIndex]){
                                       grad  : studentPopUpInfo[0]['grad'],
                                       mac   : studentPopUpInfo[0]['MAC-address'],
                                     );
+                                    updateState(newState: 1, mac: studentPopUpInfo[0]['MAC-address'],);
                                   }else
                                     {
-                                      AppCubit.get(context1).deleteRecord(AppCubit.get(context1).studentsData[sdbIndex]['id']);
+                                      updateState(newState: 0, mac: AppCubit.get(context1).studentsData[sdbIndex]['mac'])?.then((value){
+                                        AppCubit.get(context1).deleteRecord(AppCubit.get(context1).studentsData[sdbIndex]['id']);
+                                      });
                                     }
                                 completer.complete();
                                 Navigator.pop(context);
@@ -305,6 +308,12 @@ confirmationMessage({
                           {
                             if(cubit.widgetIndex == 1 || cubit.widgetIndex == 3)
                             {
+                              if(cubit.widgetIndex == 1)
+                                {
+                                  updateAllStudentState(cubit)?.then((value) async {
+                                    await Future.delayed(Duration(milliseconds: 50 ));
+                                  });
+                                }
                               cubit.updateDataBase(newIndex: 0, currentIndex: cubit.widgetIndex).then((value) async {
                                 await Future.delayed(Duration(milliseconds: 500 ));
                                 cubit.deleteDataBase();
@@ -400,6 +409,45 @@ startTimer(function){
   timer = Timer.periodic(Duration(seconds: 1), (timer) {
     function;
   });
+}
+
+Future getStudentID(mac) async {
+  String? id;
+   await FirebaseFirestore
+      .instance
+      .collection('Students')
+      .where('MAC-address',isEqualTo: mac)
+      .get().then((value) {
+    value.docs.forEach((element) {
+      id = element.id;
+    });
+  });
+   return id;
+}
+
+Future? updateState({
+  required newState,
+  required mac,
+}){
+  getStudentID(mac).then((value) async {
+    print(value);
+    await FirebaseFirestore
+        .instance
+        .collection('Students')
+        .doc(value)
+        .update({
+          'state' : newState
+        });
+  });
+  return null;
+}
+
+Future? updateAllStudentState(cubit){
+  for(var i=0;i<cubit.studentsData.length;i++)
+    {
+      updateState(newState: 2, mac: cubit.studentsData[i]['mac']);
+    }
+  return null;
 }
 
 //dangerous !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
