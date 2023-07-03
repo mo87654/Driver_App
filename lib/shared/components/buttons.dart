@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'driverMethods.dart';
+
+List<bool> isChecked = List.generate(addresses.length, (index) => false);
+List<Color> checkColor = List.generate(addresses.length, (index) => Colors.white);
+
 
 Widget appButton({
   required function,

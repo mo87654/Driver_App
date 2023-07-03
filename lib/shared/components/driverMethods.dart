@@ -65,6 +65,7 @@ void getAddresses () async {
           await getStudentData(MACaddress[j]).then((value) async {
             if (AppCubit.get(context).studentsData.isNotEmpty) {
               if (existingMAC.contains(MACaddress[j])) {
+                await Future.delayed(Duration(seconds: 1));
                 // print('student exist');
               } else {
                 popUpMessage(completer, context, 'Boarding The Bus', true);
@@ -436,7 +437,7 @@ Future? updateState({
         .collection('Students')
         .doc(value)
         .update({
-          'state' : newState
+          'state' : newState.toString()
         });
   });
   return null;
@@ -459,11 +460,7 @@ deleteAllDataBase() async {
 }
 
 //==========json file function============
-List<dynamic> macFromESP=[
-  {'MAC': 'c8:8f:66:c3:1f:36'},
-  {'MAC': '86:36:46:c8:86:f0'},
-
-];
+List<dynamic> macFromESP=[];
 List<dynamic> allStudents=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
   {'MAC': '86:36:46:c8:86:f0'},
@@ -472,10 +469,35 @@ List<dynamic> allStudents=[
 ];
 var json;
 Future getJson ()async{
-  var url=Uri.parse("https://script.googleusercontent.com/macros/echo?user_content_key=-txHhINBYG_HjSvyno1jrTZeb1ilWM4YBuGLlB17c6QnK4wLQAwAYc9pHY5EeHisDy7g8psalO0zZUUhVh7hC-OtQxlk86Jem5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnHqnKnpp1zTdfFN17X2Kveefnko7KPRe5NqUQQgRuFkDHB_7otA1G7S3cJotgUotvvcCCXpHvgrsZrYxGGIXmoCq0UjEOUCR1Nz9Jw9Md8uu&lib=MuaA7e0PjPiH0jPT4P62uuWSLqXWK-X04");
-  json = await http.read(url).then((value){
-    macFromESP = jsonDecode(value);
+  timer?.cancel();
+  var url=Uri.parse("https://script.google.com/macros/s/AKfycbzMlP_FMH_lHKAr7oksb_gQbyGjl7ePTZ9eWt4Ykt5vsF39mpuJ_DQ2mQ5eqGxLVJRT/exec");
+  json = await http.get(url).then((value){
+    macFromESP = jsonDecode(value.body);
+  }).catchError((error){
+    print(error);
   });
+  print(macFromESP);
+  startTimer(getJson());
+  return null;
 }
+
+/*
+Future<void> getJson() async {
+  var url = Uri.parse(
+      'https://script.google.com/macros/s/AKfycbzMlP_FMH_lHKAr7oksb_gQbyGjl7ePTZ9eWt4Ykt5vsF39mpuJ_DQ2mQ5eqGxLVJRT/exec');
+
+  var response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    macFromESP = jsonDecode(response.body);
+    print(macFromESP);
+    print(macFromESP.length);
+  } else {
+    print('Failed to fetch JSON data');
+  }
+  await Future.delayed(Duration(seconds: 3));
+  startTimer(getJson);
+}
+*/
 
 
