@@ -32,7 +32,6 @@ class _BusDriverHomeState extends State<BusDriverHome> {
     });
   }
 
-  Timer? timer;
   /*List studentData = [];
   List ids = [];
   //List students =[];
@@ -99,7 +98,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   height: 1.0,
                   color: Colors.grey,
                 ),
-                // IconButton(onPressed: (){updateState();}, icon: Icon(Icons.run_circle)),
+                // IconButton(onPressed: () async {await getJson();}, icon: Icon(Icons.run_circle)),
                 Expanded(
                   child: SizedBox(),
                 ),

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../shared/components/buttons.dart';
 import '../../shared/components/components.dart';
 import '../../shared/components/driverMethods.dart';
 
@@ -19,12 +20,6 @@ class _DriverAddressesState extends State<DriverAddresses> {
     super.initState();
     // getAddresses();
   }
-
-  static int _len = addresses.length;
-  List<bool> isChecked = List.generate(_len, (index) => false);
-  String _getTitle() =>
-      "Checkbox Demo : Checked = ${isChecked.where((check) => check == true).length}, Unchecked = ${isChecked.where((check) => check == false).length}";
-  String _title = "Checkbox Demo";
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit,AppStates>(
@@ -56,49 +51,78 @@ class _DriverAddressesState extends State<DriverAddresses> {
                   height: 20,
                 ),
                 Expanded(
-                  child:_len==0?Center(child: CircularProgressIndicator()):
+                  child:addresses.isEmpty?Center(child: CircularProgressIndicator()):
                   ListView.separated(
                     itemBuilder: (context, index){
-                      return Container(
-                        padding: EdgeInsets.all(10),
-                        //height: 80,
-                        decoration: BoxDecoration(
-                          color: Color(0xffC1BDBD),
-                          borderRadius: BorderRadius.circular(10),
-
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                addresses[index],
-                                style: TextStyle(
-                                  fontSize: 24,
-                                ),
-                                //maxLines: 2,
+                      return InkWell(
+                        onTap: (){
+                          setState(() {
+                            isChecked[index]=!isChecked[index];
+                            if(isChecked[index]==true)
+                            {
+                              checkColor[index]=Colors.grey[400]!;
+                            }else
+                            {
+                              checkColor[index]=Colors.white;
+                            }
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(15),
+                          margin: EdgeInsetsDirectional.only(
+                            top: 10,
+                            end: 10
+                          ),
+                          decoration: BoxDecoration(
+                            color: checkColor[index],
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(.5),
+                                spreadRadius: 2,
+                                blurRadius: 2,
+                                offset: Offset(1, 3),
                               ),
-                            ),
-                            Transform.scale(
-                                scale:1.5,
-                                child: Checkbox(
-                                    value: isChecked[index] ,
-                                    onChanged: (checked){
-                                      setState ((){
-                                        isChecked[index] = checked!;
-                                        _title = _getTitle();                  }
-
-                                      );
-                                    }
-                                )
-                            )
-                          ],
+                            ]
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  addresses[index],
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                  ),
+                                  //maxLines: 2,
+                                ),
+                              ),
+                              Transform.scale(
+                                  scale:1.5,
+                                  child: Checkbox(
+                                      value: isChecked[index] ,
+                                      onChanged: (checked){
+                                        setState ((){
+                                          isChecked[index] = checked!;
+                                          if(isChecked[index]==true)
+                                            {
+                                              checkColor[index]=Colors.grey[400]!;
+                                            }else
+                                              {
+                                                checkColor[index]=Colors.white;
+                                              }
+                                          }
+                                        );
+                                      }
+                                  )
+                              )
+                            ],
+                          ),
                         ),
                       ) ;
                     },
                     separatorBuilder: (context, index){
                       return SizedBox(
-                        height: 20,
+                        height: 30,
                       );
                     },
                     itemCount: addresses.length,
