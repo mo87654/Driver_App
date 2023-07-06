@@ -83,7 +83,7 @@ class _DriverLayoutState extends State<DriverLayout> {
   }
 
 
-  var currentIndex = 3;
+  // var currentIndex = 3;
   List<Widget> driverScreens =[
     BusDriverHome(),
     BusdriverStudentList(),
@@ -96,7 +96,7 @@ class _DriverLayoutState extends State<DriverLayout> {
     'Addresses List',
     'My account'
   ];
-  int _currentIndex = 0;
+  int _currentIndex = 3;
   final List<IconData> _iconList = [
     Icons.account_box_outlined,
     Icons.location_on,

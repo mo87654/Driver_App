@@ -98,7 +98,46 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   height: 1.0,
                   color: Colors.grey,
                 ),
-                // IconButton(onPressed: () async {await getJson();}, icon: Icon(Icons.run_circle)),
+                Container(
+                  color: Colors.blue,
+                  padding: EdgeInsets.all(16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Status indicator widget
+                      Container(
+                        width: 20,
+                        height: 20,
+                        margin: EdgeInsets.only(top: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: cubit.selectedColor,
+                        ),
+                      ),
+                      SizedBox(
+                          width:15
+                      ),
+                      Expanded(
+                        child: Text(
+                          '${cubit.selectedStatus}',
+                          // textAlign: TextAlign.center,,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                /* IconButton(onPressed: () async {startTimer(getJson(), 4);}, icon: Icon(Icons.play_circle,size: 40,)),
+                SizedBox(height: 29,),
+                IconButton(onPressed: () async {timer?.cancel();}, icon: Icon(Icons.pause_circle,size: 40,)),
+                */
                 Expanded(
                   child: SizedBox(),
                 ),
@@ -233,7 +272,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                             Navigator.pop(context);
                             cubit.updateDataBase(newIndex: 2, currentIndex: 0).then((value) async {
                               await Future.delayed(Duration(milliseconds: 500 ));
-                              startTimer(notification(context1));
+                              startTimer(notification(context1), 1);
                             });
                           },
                           child: Row(
@@ -275,7 +314,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                           Navigator.pop(context);
                           cubit.updateDataBase(newIndex: 1, currentIndex: 0).then((value) async {
                             await Future.delayed(Duration(milliseconds: 500 ));
-                            startTimer(notification(context1));
+                            startTimer(notification(context1), 1);
                           });
                         },
                         child: Row(
@@ -309,6 +348,34 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         }
     );
   }
-  
+
+
+  /*Color getStatusColor(Status status) {
+    switch (status) {
+      case Status.stopped:
+        return Colors.red;
+      case Status.onTheWayToSchool:
+        return Colors.green;
+      case Status.onTheWayHome:
+        return Colors.orange;
+      default:
+        return Colors.transparent;
+    }
+  }
+
+  String getStatusText(State status) {
+    switch (status) {
+      case Status.stopped:
+        return 'Bus Stopped';
+      case Status.onTheWayToSchool:
+        return 'On the Way to School';
+      case Status.onTheWayHome:
+        return 'On the Way Home';
+      default:
+        return '';
+    }
+  }
+*/
+
 }
 

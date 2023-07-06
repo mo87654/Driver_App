@@ -12,3 +12,6 @@ class DeleteDataBaseState extends AppStates{}
 
 class RecreateTableState extends AppStates{}
 
+class UpdateDataBase extends AppStates{}
+
+class DeleteRecord extends AppStates{}

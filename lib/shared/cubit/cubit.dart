@@ -12,7 +12,6 @@ class AppCubit extends Cubit<AppStates>
   List<Map> studentsData = [];
   Database? database;
   int? widgetIndex;
-  Widget? selectedText;
 
   Future createDB()async{
     await openDatabase(
@@ -36,7 +35,7 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
-  insertDataBase({
+  Future? insertDataBase({
     required String name,
     required String busNum,
     required String phone,
@@ -51,6 +50,7 @@ class AppCubit extends Cubit<AppStates>
       });
 
     });
+    return null;
   }
 
    getDataBase(Database database)async{
@@ -71,6 +71,7 @@ class AppCubit extends Cubit<AppStates>
         'UPDATE variables SET widgetIndex = ? WHERE widgetIndex = ?',
         ['$newIndex', '$currentIndex']
     ).then((value) async {
+      emit(UpdateDataBase());
       await database?.rawQuery("SELECT * FROM variables").then((value) {
         widgetIndex = value[0]['widgetIndex'] as int?;
         emit(GetDataBaseState());
@@ -91,9 +92,14 @@ class AppCubit extends Cubit<AppStates>
 
   deleteRecord(id) async {
     await database?.rawDelete('DELETE FROM students WHERE id = ?', [id]).then((value){
+      emit(DeleteRecord());
       getDataBase(database!);
     });
   }
+////////////////////////////////////////////////////////////////////////////////
+  Widget? selectedText;
+  Color? selectedColor;
+  String? selectedStatus;
 
   homeButton(){
     switch (widgetIndex) {
@@ -106,6 +112,8 @@ class AppCubit extends Cubit<AppStates>
                 fontStyle: FontStyle.italic
             )
         );
+        selectedColor= Colors.red;
+        selectedStatus= 'You are currently not on a commute';
         break;
       case 1:
         selectedText = Text(
@@ -116,6 +124,8 @@ class AppCubit extends Cubit<AppStates>
                 fontStyle: FontStyle.italic
             )
         );
+        selectedColor= Colors.green;
+        selectedStatus='You are currently on your way to school';
         break;
       case 2:
         selectedText = Text(
@@ -126,6 +136,8 @@ class AppCubit extends Cubit<AppStates>
                 fontStyle: FontStyle.italic
             )
         );
+        selectedColor = Colors.grey;
+        selectedStatus = 'Wait for all students to get on the bus\nThen press "Go"';
         break;
       case 3:
         selectedText = Text(
@@ -136,6 +148,8 @@ class AppCubit extends Cubit<AppStates>
                 fontStyle: FontStyle.italic
             )
         );
+        selectedColor= Colors.orange;
+        selectedStatus = 'You are currently on your way back home';
     }
   }
 
