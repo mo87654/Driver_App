@@ -49,41 +49,48 @@ void getAddresses () async {
 }
 
  notification(context) async {
-   //await Future.delayed(Duration(milliseconds: 1000 ));
+   timer?.cancel();
+   await Future.delayed(Duration(milliseconds: 1000 ));
    if(AppCubit.get(context).widgetIndex == 1 || AppCubit.get(context).widgetIndex == 2)
    {
-    timer?.cancel();
-    List existingMAC = [];
-    existingMAC.clear();
-    for (var k = 0; k < AppCubit.get(context).studentsData.length; k++) {
-      existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
-    }
-    for (var i = 0; i < macFromESP.length; i++) {
-      for (var j = 0; j < MACaddress.length; j++) {
+     getJson().then((value){
+       getMacList();
+     });
+    for (var i = 0; i < espMACsList.length; i++)
+    {
+      List existingMAC = [];
+      for (var k = 0; k < AppCubit.get(context).studentsData.length; k++)
+      {
+        existingMAC.add(AppCubit.get(context).studentsData[k]['mac']);
+      }
+      for (var j = 0; j < MACaddress.length; j++)
+      {
         Completer<void> completer = Completer<void>();
-        if (macFromESP[i]['MAC'] == MACaddress[j]) {
+        if (espMACsList[i] == MACaddress[j] && (AppCubit.get(context).widgetIndex == 1 || AppCubit.get(context).widgetIndex == 2))
+        {
           await getStudentData(MACaddress[j]).then((value) async {
-            if (AppCubit.get(context).studentsData.isNotEmpty) {
+            if (AppCubit.get(context).studentsData.isNotEmpty)
+            {
               if (existingMAC.contains(MACaddress[j])) {
                 await Future.delayed(Duration(seconds: 1));
-                // print('student exist');
+                print('student exist');
               } else {
                 popUpMessage(completer, context, 'Boarding The Bus', true);
                 await completer.future;
                 await Future.delayed(Duration(seconds: 1));
-                // print('not exist show pop up');
+                print('not exist show pop up');
               }
             } else {
+              print('first show pop up');
               popUpMessage(completer, context, 'Boarding The Bus', true);
               await completer.future;
               await Future.delayed(Duration(seconds: 1));
-              // print('first show pop up');
             }
           });
         }
       }
     }
-    startTimer(notification(context));
+    startTimer(notification(context), 1);
   }
 }
 
@@ -204,13 +211,16 @@ Future popUpMessage(completer, context1, status, bool state, [sdbIndex]){
                                       phone : studentPopUpInfo[0]['tele-num'],
                                       grad  : studentPopUpInfo[0]['grad'],
                                       mac   : studentPopUpInfo[0]['MAC-address'],
-                                    );
+                                    )?.then((value){
+                                    });
+                                    Future.delayed(Duration(milliseconds: 500));
                                     updateState(newState: 1, mac: studentPopUpInfo[0]['MAC-address'],);
                                   }else
                                     {
-                                      updateState(newState: 0, mac: AppCubit.get(context1).studentsData[sdbIndex]['mac'])?.then((value){
-                                        AppCubit.get(context1).deleteRecord(AppCubit.get(context1).studentsData[sdbIndex]['id']);
-                                      });
+                                      updateState(newState: 0, mac: AppCubit.get(context1).studentsData[sdbIndex]['mac']);
+                                      await Future.delayed(Duration(seconds: 1));
+                                      AppCubit.get(context1).deleteRecord(AppCubit.get(context1).studentsData[sdbIndex]['id']);
+
                                     }
                                 completer.complete();
                                 Navigator.pop(context);
@@ -311,10 +321,15 @@ confirmationMessage({
                             {
                               if(cubit.widgetIndex == 1)
                                 {
-                                  updateAllStudentState(cubit)?.then((value) async {
+                                  updateAllStudentState(cubit, 2)?.then((value) async {
                                     await Future.delayed(Duration(milliseconds: 50 ));
                                   });
-                                }
+                                }else if(cubit.widgetIndex == 3)
+                                  {
+                                    updateAllStudentState(cubit, 0)?.then((value) async {
+                                      await Future.delayed(Duration(milliseconds: 50 ));
+                                    });
+                                  }
                               cubit.updateDataBase(newIndex: 0, currentIndex: cubit.widgetIndex).then((value) async {
                                 await Future.delayed(Duration(milliseconds: 500 ));
                                 cubit.deleteDataBase();
@@ -323,7 +338,7 @@ confirmationMessage({
                             {
                               cubit.updateDataBase(newIndex: 3, currentIndex: 2).then((value) async {
                                 await Future.delayed(Duration(milliseconds: 500 ));
-                                startTimer(leavingNotification(context1));
+                                startTimer(leavingNotification(context1), 1);
                               });
                             }
                           }else
@@ -384,16 +399,16 @@ Future getStudentData(String MAC) async {
 }
 
 leavingNotification(context) async {
+  timer?.cancel();
+  await Future.delayed(Duration(milliseconds: 1000 ));
   if(AppCubit.get(context).widgetIndex == 3)
   {
-    timer?.cancel();
-    List espMac = [];
-    for (var j = 0; j < macFromESP.length; j++) {
-      espMac.add(macFromESP[j]['MAC']);
-    }
+    getJson().then((value){
+      getMacList();
+    });
     for (var i = 0; i < AppCubit.get(context).studentsData.length; i++) {
       Completer<void> completer2 = Completer<void>();
-      if (espMac.contains(AppCubit.get(context).studentsData[i]['mac'])) {
+      if (espMACsList.contains(AppCubit.get(context).studentsData[i]['mac']) && AppCubit.get(context).widgetIndex == 3) {
         //student still ridding the bus
         await Future.delayed(Duration(seconds: 1));
       } else {
@@ -402,12 +417,12 @@ leavingNotification(context) async {
         await Future.delayed(Duration(seconds: 1));
       }
     }
-    startTimer(leavingNotification(context));
+    startTimer(leavingNotification(context), 20);
   }
 }
 
-startTimer(function){
-  timer = Timer.periodic(Duration(seconds: 1), (timer) {
+startTimer(function, time){
+  timer = Timer.periodic(Duration(seconds: time), (timer) {
     function;
   });
 }
@@ -443,10 +458,10 @@ Future? updateState({
   return null;
 }
 
-Future? updateAllStudentState(cubit){
+Future? updateAllStudentState(cubit, newstate){
   for(var i=0;i<cubit.studentsData.length;i++)
     {
-      updateState(newState: 2, mac: cubit.studentsData[i]['mac']);
+      updateState(newState: newstate, mac: cubit.studentsData[i]['mac']);
     }
   return null;
 }
@@ -465,21 +480,89 @@ List<dynamic> allStudents=[
   {'MAC': 'c8:8f:66:c3:1f:36'},
   {'MAC': '86:36:46:c8:86:f0'},
   {'MAC': '79:fc:d1:36:08:7d'},
-  {'MAC': 'd9:e3:80:22:9a:66'}
+  {'MAC': 'd9:e3:80:22:9a:66'},
+  ["59:2b:3b:3e:28:bf", "80:cf:a2:19:db:cf"]
 ];
+
+
+
+var json;
+List<dynamic> espMACsList = []; // Change the type to List<dynamic>
+
+Future<void> getJson() async {
+  var url = Uri.parse("https://script.google.com/macros/s/AKfycbwVY1lj4BwWAMxEhSiSrAoheBNfFreaERFLJ6K61pafvSntMVzgWzc0cFTEVcxjsu1aPg/exec");
+  var response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    json = response.body;
+    macFromESP = jsonDecode(json);
+  } else {
+    print('Failed to fetch JSON data');
+  }
+}
+
+void getMacList() {
+  espMACsList.clear();
+
+  for (var item in macFromESP) {
+    var macValue = item['MAC'];
+    if (macValue != null && macValue.isNotEmpty) {
+      if (macValue.startsWith('[') && macValue.endsWith(']')) {
+        var macList = jsonDecode(macValue);
+        espMACsList.addAll(macList.map((value) => value.toString())); // Explicitly cast to String
+      } else {
+        espMACsList.add(macValue.toString()); // Explicitly cast to String
+      }
+    }
+  }
+}
+
+
+
+/*
+void getMacList() {
+  espMACsList.clear();
+  for(var i=0;i<macFromESP.length;i++)
+    {
+      espMACsList.addAll(macFromESP[i]['MAC']);
+    }
+  */
+/*for (var map in macFromESP) {
+    for (var values in map.values) {
+      espMACsList.addAll(values.cast<dynamic>());
+    }
+  }*//*
+
+  print(espMACsList);
+}
+*/
+
+
+/*
 var json;
 Future getJson ()async{
-  timer?.cancel();
-  var url=Uri.parse("https://script.google.com/macros/s/AKfycbzMlP_FMH_lHKAr7oksb_gQbyGjl7ePTZ9eWt4Ykt5vsF39mpuJ_DQ2mQ5eqGxLVJRT/exec");
+  // timer?.cancel();
+  var url=Uri.parse("https://script.google.com/macros/s/AKfycbwbgZVazPngFDkTj2inxZJkGiIr-fzS0vgIDKR-PSAzik8ghUeSmjIjexPIM5hVewuWzg/exec");
   json = await http.get(url).then((value){
     macFromESP = jsonDecode(value.body);
   }).catchError((error){
     print(error);
   });
   print(macFromESP);
-  startTimer(getJson());
+  getMacList();
   return null;
 }
+List espMACsList= [];
+getMacList(){
+  espMACsList.clear();
+  for (var map in macFromESP) {
+    for (var values in map.values) {
+      espMACsList.addAll(values);
+    }
+  }
+  print(espMACsList);
+}
+*/
 
 /*
 Future<void> getJson() async {
