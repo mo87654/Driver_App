@@ -69,7 +69,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
         },
         builder: (context, state){
           return Container(
-            color: Color(0xffEBEBEB),
+            color: Colors.white,
             padding: EdgeInsets.all(10),
             child: Column(
               children: [
@@ -97,10 +97,23 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                   width: double.infinity,
                   height: 1.0,
                   color: Colors.grey,
+                ),SizedBox(
+                  height: 10,
                 ),
                 Container(
-                  color: Colors.blue,
                   padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF4682B4),
+                    borderRadius: BorderRadius.circular(7),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF014EB8), // Darker Blue
+                        Color(0xFF4285F4), // Blue
+                      ],
+                    ),
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +163,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                     bottom: 60,
                   ),
                   child: MaterialButton(
-                    color: Colors.white,
+                    color: Color(0xFFC0C0C0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
@@ -272,7 +285,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                             Navigator.pop(context);
                             cubit.updateDataBase(newIndex: 2, currentIndex: 0).then((value) async {
                               await Future.delayed(Duration(milliseconds: 500 ));
-                              startTimer(notification(context1), 1);
+                              startTimer(notification(context1, cubit), 1);
                             });
                           },
                           child: Row(
@@ -314,7 +327,7 @@ class _BusDriverHomeState extends State<BusDriverHome> {
                           Navigator.pop(context);
                           cubit.updateDataBase(newIndex: 1, currentIndex: 0).then((value) async {
                             await Future.delayed(Duration(milliseconds: 500 ));
-                            startTimer(notification(context1), 1);
+                            startTimer(notification(context1, cubit), 1);
                           });
                         },
                         child: Row(

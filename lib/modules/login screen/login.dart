@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_app/layout/driver_layout.dart';
 import 'package:driver_app/shared/components/buttons.dart';
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../New_forgetPasswordScreen/resetEmail_Screen.dart';
@@ -251,7 +252,7 @@ class _LoginState extends State<Login> {
                 height: 40.0,
               ),
               appButton(
-
+                buttonColor: buttonColor()!,
                 text: 'Login',
                 isLoading: isLoading,
 

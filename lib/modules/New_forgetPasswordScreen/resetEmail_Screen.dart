@@ -1,5 +1,6 @@
 
 import 'package:driver_app/modules/New_forgetPasswordScreen/Gmail-Message.dart';
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -97,6 +98,7 @@ class _forgetPasswordState extends State<forgetPassword> {
                 height: 60.0,
               ),
               appButton(
+                buttonColor: buttonColor()!,
                 isLoading: isLoading,
                 text: 'Reset Email',
                 function: ()async{
