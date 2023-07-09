@@ -153,7 +153,19 @@ class _DriverLayoutState extends State<DriverLayout> {
               drawerEnableOpenDragGesture: false,
               appBar: AppBar(
                 elevation: 0,
-                backgroundColor: appColor(),
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        firstColor,
+                        secondColor!,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                ),
+                // backgroundColor: appColor(),
                 leading: leadingicon[3 - _currentIndex],
                 title: Text(
                   title[3 - _currentIndex],
@@ -354,7 +366,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                 splashColor: Colors.amber,
                 icons: _iconList,
                 activeIndex: _currentIndex,
-                splashSpeedInMilliseconds: 500,
+                splashSpeedInMilliseconds: 200,
                 gapLocation: GapLocation.none,
                 leftCornerRadius: 20,
                 rightCornerRadius: 20,
@@ -362,7 +374,7 @@ class _DriverLayoutState extends State<DriverLayout> {
                 notchSmoothness: NotchSmoothness.defaultEdge,
                 shadow: const BoxShadow(
                   offset: Offset(0, 1),
-                  blurRadius: 15,
+                  blurRadius: 10,
                   spreadRadius: 0.7,
                   color: Colors.grey,
                 ),
