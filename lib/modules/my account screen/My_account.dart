@@ -142,7 +142,7 @@ class _MyAccountState extends State<MyAccount> {
                                   : FileImage(File(_imageFile!.path)) as ImageProvider),
                         ),
                     CircleAvatar(
-                      backgroundColor:  const Color(0xffaa4d55),
+                      backgroundColor:  const Color(0xf24758b3),
                       radius: 16,
                       child: InkWell(
                         onTap: () {
