@@ -248,6 +248,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   height: 130.0
               ),
               appButton(
+                buttonColor: buttonColor()!,
                 isLoading: isLoading,
                 text: 'Save',
                 function: ()async{

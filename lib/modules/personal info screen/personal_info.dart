@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import '../../../shared/component/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/components/colors.dart';
+
 
 class PersonalInfo extends StatelessWidget {
   var formkey = GlobalKey<FormState>();
@@ -61,6 +63,7 @@ class PersonalInfo extends StatelessWidget {
     return Scaffold(
 
       appBar:AppBar(
+        backgroundColor: appColor(),
         leading:  IconButton(icon:  Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
@@ -166,7 +169,7 @@ class PersonalInfo extends StatelessWidget {
                     ),
 
                   ),
-                  color: Color(0xff515281),
+                  color: buttonColor(),
                   shape:RoundedRectangleBorder (
                     borderRadius: BorderRadius.circular (10.0), ),
 

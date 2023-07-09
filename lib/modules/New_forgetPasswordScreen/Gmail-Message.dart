@@ -1,4 +1,5 @@
 import 'package:driver_app/modules/login%20screen/login.dart';
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -112,7 +113,7 @@ class gmailMessage extends StatelessWidget {
                           Icon(Icons.mail,color: Colors.orange,)
                         ],
                       ),
-                      color: Color(0xff4d6aaa),
+                      color: buttonColor(),
                       shape:RoundedRectangleBorder (
                         borderRadius: BorderRadius.circular (10.0), ),
                     ),

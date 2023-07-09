@@ -1,4 +1,5 @@
 
+import 'package:driver_app/shared/components/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import '../../shared/component/buttons.dart';
@@ -26,6 +27,7 @@ class _HelpPageState extends State<HelpPage> {
 
 
       appBar:AppBar(
+        backgroundColor: appColor(),
         leading:  IconButton(icon:
         Icon(Icons.arrow_back),
           onPressed: () {
@@ -102,7 +104,7 @@ class _HelpPageState extends State<HelpPage> {
               ),
               SizedBox(height: 220.0),
               appButton(
-
+                buttonColor: buttonColor()!,
                 isLoading: isLoading,
                 text: 'Save',
                 function: ()async{
