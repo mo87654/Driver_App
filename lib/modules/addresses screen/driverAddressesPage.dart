@@ -26,6 +26,7 @@ class _DriverAddressesState extends State<DriverAddresses> {
         listener: (context, state){},
         builder: (context, state){
           return Container(
+            color: Color(0xFFCCCCCC),
             padding: EdgeInsets.all(10),
             width: double.infinity,
             child: Column(
