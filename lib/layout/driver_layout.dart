@@ -122,6 +122,7 @@ class _DriverLayoutState extends State<DriverLayout> {
   }
   @override
   Widget build(BuildContext context) {
+    popUpContext=context;
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     List<Widget> leadingicon = [
