@@ -359,7 +359,7 @@ class _DriverLayoutState extends State<DriverLayout> {
               body: driverScreens[3 - _currentIndex],
               bottomNavigationBar: AnimatedBottomNavigationBar(
                 splashRadius: 50,
-                iconSize: 30,
+                iconSize: 36,
                 inactiveColor: Colors.white,
                 activeColor: Colors.amber,
                 backgroundColor: appColor(),
