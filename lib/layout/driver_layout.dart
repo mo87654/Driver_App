@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../modules/addresses screen/driverAddressesPage.dart';
 import '../modules/home screen/BusDriver_firstScreen.dart';
 import '../modules/my account screen/My_account.dart';
@@ -19,7 +20,7 @@ import '../shared/components/colors.dart';
 import '../shared/components/components.dart';
 import '../shared/components/driverMethods.dart';
 import '../shared/cubit/cubit.dart';
-
+import 'dart:io';
 class DriverLayout extends StatefulWidget {
 
   @override
@@ -107,6 +108,10 @@ class _DriverLayoutState extends State<DriverLayout> {
 
   final user =  FirebaseAuth.instance.currentUser!;
 
+  Future<String?> loadimagedrawer() async {
+    SharedPreferences saveimage = await SharedPreferences.getInstance();
+    return saveimage.getString("imagepath");
+  }
 
   Future<Object> getuserinfo() async {
     final CollectionReference users = FirebaseFirestore.instance.collection('Drivers');
@@ -146,6 +151,7 @@ class _DriverLayoutState extends State<DriverLayout> {
             return Scaffold(
               drawerEnableOpenDragGesture: false,
               appBar: AppBar(
+                elevation: 0,
                 backgroundColor: appColor(),
                 leading: leadingicon[3 - _currentIndex],
                 title: Text(
@@ -161,7 +167,22 @@ class _DriverLayoutState extends State<DriverLayout> {
                   child: Column(
                     children: [
                       ListTile(
-                        leading: const Icon(Icons.person),
+                        leading: FutureBuilder<String?>(
+                          future:   loadimagedrawer(),
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                            if (snapshot.hasData && snapshot.data != null) {
+                              return CircleAvatar(
+                                radius: 30,
+                                backgroundImage: FileImage(File(snapshot.data!)),
+                              );
+                            } else {
+                              return CircleAvatar(
+                                radius: 50,
+                                child: Icon(Icons.person),
+                              );
+                            }
+                          },
+                        ),
                         title: FutureBuilder(
                           future: getuserinfo(),
                           builder: (_, AsyncSnapshot snapshot) {

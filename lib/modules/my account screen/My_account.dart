@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:path/path.dart';
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
 
@@ -31,17 +32,39 @@ class _MyAccountState extends State<MyAccount> {
   Future<void> savephoto(Path) async {
     SharedPreferences saveimage = await SharedPreferences.getInstance();
     saveimage.setString("imagepath", Path);
-
-
   }
-
-  Future<void> loadimage() async {
+  Future<String?> loadimage() async {
     SharedPreferences saveimage = await SharedPreferences.getInstance();
     setState(() {
-      _imagepath = saveimage.getString("imagepath");
+      _imagepath= saveimage.getString("imagepath");
     });
+    //return saveimage.getString("imagepath");
   }
 
+  void takePhoto(ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
+    if (pickedFile != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = basename(pickedFile.path);
+      final savedImage = await File(pickedFile.path).copy('${appDir.path}/$fileName');
+      setState(() {
+        _imagepath = savedImage.path;
+        print(_imagepath);
+      });
+      savephoto(_imagepath!); // حفظ الصورة المحددة
+      final newImage = File(_imagepath!);
+      final imageBytes = newImage.readAsBytesSync();
+      final image64 = base64Encode(imageBytes);
+      print(image64);
+    }
+  }
+  void deletePhoto() async {
+    setState(() {
+      _imagepath = null;
+    });
+    SharedPreferences saveimage = await SharedPreferences.getInstance();
+    saveimage.remove("imagepath");
+  }
   String? _imagepath;
   final ImagePicker picker = ImagePicker();
   Color purple = const Color.fromRGBO(38, 107, 128, 0.9490196078431372);
@@ -107,12 +130,16 @@ class _MyAccountState extends State<MyAccount> {
                       children:<Widget>[
                         _imagepath != null?
                         CircleAvatar(backgroundImage: FileImage(File(_imagepath!)),radius: 80,)
-                     :CircleAvatar(
-                        radius: 64,
-                        backgroundImage: _imageFile == null ?
-                         AssetImage("assets/images/User3.jpg")
-                            : FileImage(File(_imageFile!.path)) as ImageProvider),
-
+                            :    GestureDetector(
+                          onTap: () {
+                            takePhoto(ImageSource.gallery);
+                          },
+                          child: CircleAvatar(
+                              radius: 64,
+                              backgroundImage: _imageFile == null ?
+                              AssetImage("assets/images/User3.jpg")
+                                  : FileImage(File(_imageFile!.path)) as ImageProvider),
+                        ),
                     CircleAvatar(
                       backgroundColor:  const Color(0xff4d6aaa),
                       radius: 16,
@@ -134,22 +161,7 @@ class _MyAccountState extends State<MyAccount> {
                   ],
                 ),
               ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.save_as_outlined,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  savephoto(_imageFile?.path);
-                  loadimage();
 
-                },
-                label: const Text("save",
-                  style: TextStyle(
-                    color: Colors.black,
-
-                  ),
-                ),
-              ),
             ],
 
           ),
@@ -260,7 +272,7 @@ class _MyAccountState extends State<MyAccount> {
     return Container(
       color: const Color(0xff8093bc),
       height: 100,
-      width: MediaQuery.of(context).size.width,
+      //width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20,
@@ -311,6 +323,21 @@ class _MyAccountState extends State<MyAccount> {
                   ),
 
                 ),
+                OutlinedButton.icon(
+
+                  icon: const Icon(Icons.delete,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    deletePhoto();
+                  },
+                  label: const Text("delete",
+                    style: TextStyle(
+                        color: Colors.black
+                    ),
+                  ),
+
+                ),
               ],
             ),
           )
@@ -319,29 +346,7 @@ class _MyAccountState extends State<MyAccount> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
-    final pickedFile = await picker.getImage(
-      source: source,
-    );
-    setState(() {
-      _imageFile = pickedFile ?? '' as PickedFile;
-      print(_imageFile?.path);
-    });
-  }
 
-  pickPicture() async {
-    _imageFile = await picker.getImage(
-        source: ImageSource.gallery, maxHeight: 200, maxWidth: 200);
-
-    print(_imageFile);
-
-    if(_imageFile != null) {
-      final File newImage = File(_imageFile!.path);
-
-      List<int> imageBytes = newImage.readAsBytesSync();
-      image64 = base64Encode(imageBytes);
-    }
-  }
 }
 
 class HeaderCurvedContainer extends CustomPainter {
